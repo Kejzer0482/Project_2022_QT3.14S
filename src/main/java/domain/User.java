@@ -1,9 +1,7 @@
 package domain;
-class user extends Account{
+class User extends Account{
 
-    public user(String username){
+    public User(String username){
         super(username);
     }
-
-
 }

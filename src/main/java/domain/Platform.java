@@ -1,4 +1,9 @@
 package domain;
+class Platform{
+    public Platform(){
+        super();
 
-public class Platform {
+        // Lav liste af film og serie objekter med tilhørende metoder(add/remove)
+
+    }
 }
