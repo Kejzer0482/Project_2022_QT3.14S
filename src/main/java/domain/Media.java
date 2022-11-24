@@ -8,7 +8,7 @@ abstract class Media{
     protected double rating;
     protected String picture;
 
-    public Media(String title , String releaseYear, double rating, List<String> genres){
+    public Media(String title , String releaseYear,List<String> genres, double rating ){
         this.title = title;
         this.releaseYear = releaseYear;
         this.rating = rating;
