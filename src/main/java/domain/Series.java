@@ -2,10 +2,12 @@ package domain;
 import java.util.*;
 
 class Series extends Media{
-    List<String> seasons;
-    List<Integer> episodes;
+    /*we use index+1 to determine which season it is, so the ArrayList only
+    needs to hold the amount of episodes pr season.*/
 
-    public Series(String title , String releaseYear, double rating, List<String> genres){
-        super(title , releaseYear, rating, genres);
+    List<String> Episodes;
+
+    public Series(String title , String releaseYear,List<String> genres, double rating,  String picture){
+        super(title , releaseYear, genres, rating, picture);
     }
 }

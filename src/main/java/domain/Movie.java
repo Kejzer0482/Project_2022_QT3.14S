@@ -3,8 +3,8 @@ import java.util.*;
 
 class Movie extends Media{
 
-    public Movie(String title , String releaseYear, double rating, List<String> genres){
-        super(title , releaseYear, rating, genres);
+    public Movie(String title , String releaseYear, List<String> genres, double rating , String picture){
+        super(title , releaseYear, genres, rating, picture);
     }
 
 }
