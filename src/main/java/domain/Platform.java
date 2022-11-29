@@ -51,9 +51,8 @@ class Platform{
             double rating = Double.parseDouble(mediaData.get(3).replaceAll("," , "."));
 
             //if the mediatype is a series it has an extra datapoint(Seasons-episode)
+            List<String> seasons_Episodes = new ArrayList<>();
             if(mediaRawDataLine.length() == 5){
-
-                List<String> seasons_Episodes = new ArrayList<>();
                 String[] seasonArray= mediaData.get(4).split(",");
                 //adding elements from seasonArray to arrayList seasons.
                 for(int i = 0; i < seasonArray.length; i++) {
@@ -66,19 +65,40 @@ class Platform{
                 Last datapoint, which isn't a part of the raw data set is the picture
                 which we will save as a directory for now
             */
-            if (mediaRawDataLine.length() < 5){
-                String picturePath = "/Project_2022_QT3.14S/src/main/java/data/filmplakater/" + title +".jpg";
+
+            if (mediaData.size() < 5){
+                String picturePath = "C:\\Users\\MR.X\\OneDrive\\Skrivebord\\GRPRO\\Projekt\\Project_2022_QT3.14S\\src\\main\\java\\data\\filmplakater\\" + title + ".jpg";
                 //Instantiate the object with the sorted data.
                 Movie movie = new Movie(title, releaseYear, genres, rating, picturePath);
+
                 //add to list of media which is to be returned.
                 completeMediaList.add(movie);
 
-            } else if(mediaRawDataLine.length() == 5){
+
+
+            } else if(mediaData.size() == 5){
+
                 //Instantiate the object with sorted data for series
                 String picturePath = "/Project_2022_QT3.14S/src/main/java/data/serieforsider/" + title +".jpg";
-                Series series = new Series(title, releaseYear, genres, rating, picturePath);
+                Series series = new Series(title, releaseYear, genres, rating, seasons_Episodes,  picturePath);
+                completeMediaList.add(series);
+
             }
+
         }
         return completeMediaList;
+    }
+
+    public static void main(String[] args) {
+        Platform platform = new Platform();
+        List<Media> movieList = new ArrayList<>();
+        movieList = platform.createMediaList("C:\\Users\\MR.X\\OneDrive\\Skrivebord\\GRPRO\\Projekt\\Project_2022_QT3.14S\\src\\main\\java\\data\\serie.txt");
+
+        for(Media series : movieList){
+            System.out.println(series.getTitle());
+        }
+
+
+
     }
 }

@@ -12,7 +12,7 @@ abstract class Media{
         this.title = title;
         this.releaseYear = releaseYear;
         this.rating = rating;
-        genres = new ArrayList<>();
+        this.genres = genres;
     }
 
     public String getTitle(){
@@ -26,4 +26,5 @@ abstract class Media{
     public double rating(){
         return rating;
     }
+
 }
