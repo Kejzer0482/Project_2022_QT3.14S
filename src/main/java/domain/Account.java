@@ -1,7 +1,7 @@
 package domain;
 import java.util.*;
 
-abstract class Account{
+public abstract class Account{
     protected String username;
     protected List<Media> favorites;
 

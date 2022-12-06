@@ -1,7 +1,7 @@
 package domain;
 import java.util.*;
 
-abstract class Media{
+public abstract class Media{
     protected String title;
     protected String releaseYear;
     protected List<String> genres;
@@ -23,8 +23,13 @@ abstract class Media{
         return releaseYear;
     }
 
-    public double rating(){
+    public double getRating(){
         return rating;
     }
+
+    public List<String> getGenres(){
+        return genres;
+    }
+
 
 }

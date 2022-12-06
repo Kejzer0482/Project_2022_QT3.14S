@@ -1,14 +1,21 @@
 package data;
 
-import java.io.*;
-import java.util.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
 public class DataAccess {
     private String path;
     //Konstruktør til dataAcces, appointer input til path.
     public DataAccess(String path){
         this.path = path;
     }
-    public List<String>  loadFile(){
+    public List<String> loadFile(){
 
         List<String> result = new ArrayList<>();
         try {
@@ -28,6 +35,7 @@ public class DataAccess {
         }
         return result;
     }
+
 
     /*public static void main(String[] args) {
         DataAccess DA = new DataAccess("/Users/ol/Documents/GitHub/GRPRO_Project_QT3.14S/src/Data/film.txt");

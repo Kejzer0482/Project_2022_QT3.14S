@@ -1,7 +1,7 @@
 package domain;
 import java.util.*;
 
-class Series extends Media{
+public class Series extends Media{
     /*we use index+1 to determine which season it is, so the ArrayList only
     needs to hold the amount of episodes pr season.*/
 

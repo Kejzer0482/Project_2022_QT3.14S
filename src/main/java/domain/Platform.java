@@ -3,9 +3,9 @@ package domain;
 import data.DataAccess;
 import java.util.*;
 
-class Platform{
-    ArrayList<Media> movies;
-    ArrayList<Media> series;
+public class Platform{
+    protected ArrayList<Media> movies;
+    protected ArrayList<Media> series;
     public Platform(){
 
         movies = new ArrayList<>();
@@ -88,15 +88,38 @@ class Platform{
         }
         return completeMediaList;
     }
+    public List<Media> specificGenre(List<Media> MediaList, String genre){
+        //Instantiating the list of results
+        List<Media> genresList = new ArrayList<>();
+        //iterating over each element of media list of a specific type of media
+        for(int i = 0;  i < MediaList.size(); i++){
+            //fetching object
+            Media currentMediaFile = MediaList.get(i);
+            //iterating over each genres if multiple genres
+            for(String genreTemp : currentMediaFile.getGenres() ){
+                //if the genres is equal to that of the relevant one, then we add it to the resulting list
+                if(genreTemp.toLowerCase().trim().equals(genre.toLowerCase().trim())){
+                    genresList.add(currentMediaFile);
+                }
+
+            }
+        }
+        //Maybe add an unchecked Exception a la "The genre does not exist".
+        return genresList;
+    }
+
+
 
     public static void main(String[] args) {
         Platform platform = new Platform();
         List<Media> movieList = new ArrayList<>();
+
         movieList = platform.createMediaList("C:\\Users\\MR.X\\OneDrive\\Skrivebord\\GRPRO\\Projekt\\Project_2022_QT3.14S\\src\\main\\java\\data\\serie.txt");
 
         for(Media series : movieList){
             System.out.println(series.getTitle());
         }
+
 
 
 

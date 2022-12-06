@@ -1,5 +1,8 @@
 package presentation;
 
+import domain.Platform;
+import domain.Media;
+import domain.User;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -9,6 +12,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+
+//import javax.print.attribute.standard.Media;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main extends Application {
 
@@ -120,6 +127,26 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        launch(args);
+        //Instantiate platform
+        Platform streaming = new Platform();
+        //Create mediaLists
+        List<Media> movies = streaming.createMediaList("src/main/java/data/film.txt");
+        List<Media> series = streaming.createMediaList("src/main/java/data/serie.txt");
+        List<Media> complete = new ArrayList<>();
+        complete.addAll(series);
+        complete.addAll(movies);
+
+        User bruger = new User("Oliver");
+        List<Media> krimiList = streaming.specificGenre(complete, "crime");
+
+
+        /*for(Media krimiMedia : krimiList){
+            System.out.println(krimiMedia.getTitle() + " " + krimiMedia.getGenres() + krimiMedia.getClass() );
+        }*/
+
+
+
+
+       launch(args);
     }
 }
