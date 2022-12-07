@@ -67,7 +67,7 @@ public class Platform{
             */
 
             if (mediaData.size() < 5){
-                String picturePath = "C:\\Users\\MR.X\\OneDrive\\Skrivebord\\GRPRO\\Projekt\\Project_2022_QT3.14S\\src\\main\\java\\data\\filmplakater\\" + title + ".jpg";
+                String picturePath = "src/main/java/data/filmplakater/" + title + ".jpg";
                 //Instantiate the object with the sorted data.
                 Movie movie = new Movie(title, releaseYear, genres, rating, picturePath);
 
@@ -79,7 +79,7 @@ public class Platform{
             } else if(mediaData.size() == 5){
 
                 //Instantiate the object with sorted data for series
-                String picturePath = "/Project_2022_QT3.14S/src/main/java/data/serieforsider/" + title +".jpg";
+                String picturePath = "src/main/java/data/serieforsider/" + title +".jpg";
                 Series series = new Series(title, releaseYear, genres, rating, seasons_Episodes,  picturePath);
                 completeMediaList.add(series);
 
@@ -114,7 +114,7 @@ public class Platform{
         Platform platform = new Platform();
         List<Media> movieList = new ArrayList<>();
 
-        movieList = platform.createMediaList("C:\\Users\\MR.X\\OneDrive\\Skrivebord\\GRPRO\\Projekt\\Project_2022_QT3.14S\\src\\main\\java\\data\\serie.txt");
+        movieList = platform.createMediaList("src/main/java/data/serie.txt");
 
         for(Media series : movieList){
             System.out.println(series.getTitle());

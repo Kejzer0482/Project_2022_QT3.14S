@@ -13,6 +13,7 @@ public abstract class Media{
         this.releaseYear = releaseYear;
         this.rating = rating;
         this.genres = genres;
+        this.picture = picture;
     }
 
     public String getTitle(){
@@ -29,6 +30,10 @@ public abstract class Media{
 
     public List<String> getGenres(){
         return genres;
+    }
+
+    public String getPicture() {
+        return picture;
     }
 
 
