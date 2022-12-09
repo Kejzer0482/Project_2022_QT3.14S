@@ -108,7 +108,19 @@ public class Platform{
         return genresList;
     }
 
+    public Media search_function (String name){
+        List<Media> searchSerie = createMediaList("src/main/java/data/serie.txt");
+        List<Media> searchMovie = createMediaList("src/main/java/data/film.txt");
+        List<Media> completeList = new ArrayList<>();
+        completeList.addAll(searchSerie);
+        completeList.addAll(searchMovie);
 
+        for(Media current : completeList){
+            if(name.toLowerCase().equals(current.getTitle().toLowerCase())){
+               return current;}
+        }
+        return null;
+    }
 
     public static void main(String[] args) {
         Platform platform = new Platform();
@@ -119,9 +131,5 @@ public class Platform{
         for(Media series : movieList){
             System.out.println(series.getTitle());
         }
-
-
-
-
     }
 }
