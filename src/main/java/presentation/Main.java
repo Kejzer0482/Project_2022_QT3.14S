@@ -53,7 +53,7 @@ public class Main extends Application {
         // Content StackPane
         contentPane.setStyle("-fx-background-color: black");
         contentPane.getChildren().add(contentList);
-        contentPane.setPadding(new Insets(0, 10, 10, 10));
+        contentPane.setPadding(new Insets(10, 10, 10, 10));
 
         // Content list (right side content)
         contentList.setAlignment(Pos.CENTER);
@@ -138,8 +138,8 @@ public class Main extends Application {
         root.setCenter(contentPane);
         root.setLeft(menuPane);
         menuPane.getChildren().add(menuList);                    //Adds menu list to the stackPane
-        menuList.getChildren().add(accountInfo);
         menuList.getChildren().add(searchBox);
+        menuList.getChildren().add(accountInfo);
         accountInfo.getChildren().add(accountLabel);
         accountInfo.getChildren().add(switchAccount);
         searchBox.getChildren().add(searchBar);
@@ -173,8 +173,6 @@ public class Main extends Application {
         contentList.getChildren().add(genreButtons2);
         contentList.getChildren().add(movieScroll);
         movieFlow.setPrefSize(1265, 840);
-        genreButtons1.getChildren().clear();
-        genreButtons2.getChildren().clear();
         createGenres("movie");
         getMovies("all");
     }
@@ -185,8 +183,6 @@ public class Main extends Application {
         contentList.getChildren().add(genreButtons2);
         contentList.getChildren().add(seriesScroll);
         seriesFlow.setPrefSize(1265, 840);
-        genreButtons1.getChildren().clear();
-        genreButtons2.getChildren().clear();
         createGenres("series");
         getSeries("all");
     }
@@ -209,6 +205,8 @@ public class Main extends Application {
     }
 
     private void createGenres(String type) { //Creates an array of genre strings and then creates buttons
+        genreButtons1.getChildren().clear();
+        genreButtons2.getChildren().clear();
         String input;
         if (type.equals("movie")) {
             input = "Crime, Drama, Biography, Sport, History, Romance, War, Mystery, Adventure, Family, Fantasy, Thriller, Horror, Film-Noir, Action, Sci-fi, Comedy , Musical, Western, Music";
@@ -218,17 +216,24 @@ public class Main extends Application {
         String[] genres = input.split(", ");
         for (int i = 0; i < genres.length; i++) {
             if (i % 2 == 0) {
-                genreButtons1.getChildren().add(createGenreButton(genres[i]));
+                genreButtons1.getChildren().add(createGenreButton(genres[i], type));
             } else {
-                genreButtons2.getChildren().add(createGenreButton(genres[i]));
+                genreButtons2.getChildren().add(createGenreButton(genres[i], type));
             }
         }
     }
 
-    private Button createGenreButton(String text) { //Creates buttons for genres in movie and series tab.
+    private Button createGenreButton(String text, String type) { //Creates buttons for genres in movie and series tab.
         Button button = new Button(text);
         button.setPrefSize(130, 40);
         button.setStyle("-fx-background-color: black; -fx-text-fill: white; -fx-border-color: white");
+        button.setOnMouseClicked((event) -> {
+            if (type.equals("movie")) {
+                getMovies(text);
+            } else {
+                getSeries(text);
+            }
+        });
         return button;
     }
     private Label createLabel(String text) { //Creates a label with text, color, size and font
