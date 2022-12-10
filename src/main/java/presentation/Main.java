@@ -131,8 +131,7 @@ public class Main extends Application {
             search(searchBar.getText());
             searchBar.clear();
         });
-
-
+        
         /* Puzzle
         * @desc Putting everything together
          */
@@ -273,7 +272,7 @@ public class Main extends Application {
         }
     }
 
-    private void addPoster(Media media, String type) {
+    private void addPoster(Media media, String type) { //Adds posters to the flowpanes with media and "movies"/"series" as arguments
         ImageView poster = new ImageView(media.getPicture());
         poster.setOnMouseClicked((event) -> {
             popupWindow(media);
@@ -284,7 +283,7 @@ public class Main extends Application {
             seriesFlow.getChildren().add(poster);
         }
     }
-    
+
     private void popupWindow(Media media) { //Creates a new window for the popup window when clicking a movie or series
         Stage popup = new Stage();
         // Main pane
@@ -377,7 +376,7 @@ public class Main extends Application {
         movieFlow.setPrefSize(1265, 840);
         try {
             addPoster(result, "movies");
-        } catch (NullPointerException e) {
+        } catch (NullPointerException e) { //Error message if input does not match any media title
             Stage searchError = new Stage();
             StackPane errorPane = new StackPane();
             errorPane.setStyle("-fx-background-color: #ff5959");
