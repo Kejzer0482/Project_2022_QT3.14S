@@ -31,19 +31,14 @@ public class Main extends Application {
     private ScrollPane seriesScroll = new ScrollPane(seriesFlow);           //Creates new ScrollPane and attaches seriesFlow to it
     private VBox menuList = new VBox();
     private VBox contentList = new VBox();
-    private HBox movieGenres1 = new HBox();
-    private HBox movieGenres2 = new HBox();
-    private HBox seriesGenres1 = new HBox();
-    private HBox seriesGenres2 = new HBox();
+    private HBox genreButtons1 = new HBox();
+    private HBox genreButtons2 = new HBox();
+    private HBox searchBox = new HBox();
     private Label movieLabel = createLabel("Movies");           //Calling homemade createLabel method
     private Label seriesLabel = createLabel("Series");          //Calling homemade createLabel method
     private Label myListLabel = createLabel("My List");         //Calling homemade createLabel method
     private HBox accountInfo = new HBox();
     private Label accountLabel = new Label();
-    private Button homeButton = createMenuButton("Home");       //Calling homemade createButton method
-    private Button moviesButton = createMenuButton("Movies");   //Calling homemade createButton method
-    private Button seriesButton = createMenuButton("Series");   //Calling homemade createButton method
-    private Button myListButton = createMenuButton("My List");  //Calling homemade createButton method
     private Button playButton = new Button();
     private Button saveButton = new Button();
 
@@ -51,72 +46,54 @@ public class Main extends Application {
         /* Layout
          * @desc Setting layout on different panes and elements
          */
+        // Menu StackPane
         menuPane.setStyle("-fx-background-color: grey");
         menuPane.setMinWidth(300);
 
+        // Content StackPane
         contentPane.setStyle("-fx-background-color: black");
         contentPane.getChildren().add(contentList);
         contentPane.setPadding(new Insets(0, 10, 10, 10));
 
+        // Content list (right side content)
         contentList.setAlignment(Pos.CENTER);
 
+        // Movies FlowPane
         movieFlow.setHgap(8);
         movieFlow.setVgap(8);
         movieFlow.setAlignment(Pos.CENTER);
         movieFlow.setStyle("-fx-background-color: purple");
+
+        // Series FlowPane
         seriesFlow.setHgap(8);
         seriesFlow.setVgap(8);
         seriesFlow.setAlignment(Pos.CENTER);
         seriesFlow.setStyle("-fx-background-color: purple");
 
-        /* Genres
-        * @desc Creating genre buttons for movies and series pages.
-                Splitting both into two HBoxes for better visual overview.
-        * @next Code duplication. Might be nice to make a method for this
-         */
-        movieGenres1.setAlignment(Pos.CENTER);
-        movieGenres2.setAlignment(Pos.CENTER);
-        String[] movieGenre = createGenres("movie");
-        int amount1 = movieGenre.length;
-        for (int i = 0; i < amount1; i++) {
-            Button button = createGenreButton(movieGenre[i]);
-            button.setStyle("-fx-border-color: white; -fx-background-color: black; -fx-text-fill: white");
-            button.setPrefWidth(130);
-            String genre = movieGenre[i];
-            button.setOnMouseClicked((event) -> {                   //Returns all movies from a specific genre on click
-                getMovies(genre);
-            });
-            if (i % 2 == 0) {
-                movieGenres1.getChildren().add(button);
-            } else {
-                movieGenres2.getChildren().add(button);
-            }
-        }
-        seriesGenres1.setAlignment(Pos.CENTER);
-        seriesGenres2.setAlignment(Pos.CENTER);
-        String[] seriesGenre = createGenres("series");
-        int amount2 = seriesGenre.length;
-        for (int i = 0; i < amount2; i++) {
-            Button button = createGenreButton(seriesGenre[i]);
-            button.setStyle("-fx-border-color: white; -fx-background-color: black; -fx-text-fill: white");
-            button.setPrefWidth(130);
-            String genre = seriesGenre[i];
-            button.setOnMouseClicked((event) -> {
-                getSeries(genre);
-            });
-            if (i % 2 == 0) {
-                seriesGenres1.getChildren().add(button);
-            } else {
-                seriesGenres2.getChildren().add(button);
-            }
-        }
+        // Active account info line
+        accountInfo.setSpacing(5);
+        accountInfo.setAlignment(Pos.CENTER);
+
+        // Active account Label
+        accountLabel.setText("Logged in as: " + streaming.getActiveAccount().getUserName());
+        accountLabel.setFont(new Font("Calibri", 20));
+        accountLabel.setStyle("-fx-text-fill: black");
+
+        // Menu list
+        menuList.setSpacing(30);
+        menuList.setAlignment(Pos.CENTER);                       //Places button in the middle instead of top left
+
+        // Search Box
+        searchBox.setSpacing(8);
+        searchBox.setAlignment(Pos.CENTER);
+
+        // Genre button lists
+        genreButtons1.setAlignment(Pos.CENTER);
+        genreButtons2.setAlignment(Pos.CENTER);
 
         /* Search Bar
          * @desc Adding a search bar to the menu list
          */
-        HBox searchBox = new HBox();
-        searchBox.setSpacing(8);
-        searchBox.setAlignment(Pos.CENTER);
         TextField searchBar = new TextField();
         searchBar.setPromptText("Search here");
         searchBar.setOnKeyPressed((event) -> {
@@ -125,56 +102,54 @@ public class Main extends Application {
                 searchBar.clear();
             }
         });
+
+        /* Menu Buttons
+         * @desc Adding menu buttons
+         */
+        Button homeButton = createMenuButton("Home");
+        homeButton.setOnMouseClicked((event) -> {
+            homeButton();
+        });
+        Button moviesButton = createMenuButton("Movies");
+        moviesButton.setOnMouseClicked((event) -> {
+            moviesButton();
+        });
+        Button seriesButton = createMenuButton("Series");
+        seriesButton.setOnMouseClicked((event) -> {
+            seriesButton();
+        });
+        Button myListButton = createMenuButton("My List");
+        myListButton.setOnMouseClicked((event) -> {
+            myListButton();
+        });
+        Button switchAccount = new Button("Switch");
+        switchAccount.setOnMouseClicked((event) -> {
+            switchAccount();
+        });
         Button searchButton = new Button("Search");
         searchButton.setOnMouseClicked((event) -> {
             search(searchBar.getText());
             searchBar.clear();
         });
-        searchBox.getChildren().add(searchBar);
-        searchBox.getChildren().add(searchButton);
-        menuList.getChildren().add(searchBox);
 
-        /* Account Info
-         * @desc Adding account information and switch button to the menu list
-         */
-        Button switchAccount = new Button("Switch");
-        switchAccount.setOnMouseClicked((event) -> {
-            switchAccount();
-        });
-        accountInfo.setSpacing(5);
-        accountInfo.setAlignment(Pos.CENTER);
-        accountLabel.setText("Logged in as: " + streaming.getActiveAccount().getUserName());
-        accountLabel.setFont(new Font("Calibri", 20));
-        accountLabel.setStyle("-fx-text-fill: black");
-        accountInfo.getChildren().add(accountLabel);
-        accountInfo.getChildren().add(switchAccount);
 
-        /* Menu List
-         * @desc Setting up the menu list and adding function to menu buttons (They call their respective methods)
+        /* Puzzle
+        * @desc Putting everything together
          */
-        menuList.setSpacing(30);
-        menuList.setAlignment(Pos.CENTER);                       //Places button in the middle instead of top left
+        root.setCenter(contentPane);
+        root.setLeft(menuPane);
         menuPane.getChildren().add(menuList);                    //Adds menu list to the stackPane
         menuList.getChildren().add(accountInfo);
-        homeButton.setOnMouseClicked((event) -> {
-            homeButton();
-        });
-        moviesButton.setOnMouseClicked((event) -> {
-            moviesButton();
-        });
-        seriesButton.setOnMouseClicked((event) -> {
-            seriesButton();
-        });
-        myListButton.setOnMouseClicked((event) -> {
-            myListButton();
-        });
+        menuList.getChildren().add(searchBox);
+        accountInfo.getChildren().add(accountLabel);
+        accountInfo.getChildren().add(switchAccount);
+        searchBox.getChildren().add(searchBar);
+        searchBox.getChildren().add(searchButton);
 
         /* Initialize
          * @desc Finalizes the scene and makes the program show
          */
         Scene scene = new Scene(root, 1600, 900);       //Creates scene and sets dimensions of window
-        root.setCenter(contentPane);
-        root.setLeft(menuPane);
         primaryStage.setScene(scene);
         primaryStage.setTitle("QT3.14s&Chill");
         primaryStage.show();
@@ -195,19 +170,25 @@ public class Main extends Application {
 
     private void moviesButton() { //Clears content list and builds the moviespage
         contentList.getChildren().clear();
-        contentList.getChildren().add(movieGenres1);
-        contentList.getChildren().add(movieGenres2);
+        contentList.getChildren().add(genreButtons1);
+        contentList.getChildren().add(genreButtons2);
         contentList.getChildren().add(movieScroll);
         movieFlow.setPrefSize(1265, 840);
+        genreButtons1.getChildren().clear();
+        genreButtons2.getChildren().clear();
+        createGenres("movie");
         getMovies("all");
     }
 
     private void seriesButton() { //Clears content list and builds the seriespage
         contentList.getChildren().clear();
-        contentList.getChildren().add(seriesGenres1);
-        contentList.getChildren().add(seriesGenres2);
+        contentList.getChildren().add(genreButtons1);
+        contentList.getChildren().add(genreButtons2);
         contentList.getChildren().add(seriesScroll);
         seriesFlow.setPrefSize(1265, 840);
+        genreButtons1.getChildren().clear();
+        genreButtons2.getChildren().clear();
+        createGenres("series");
         getSeries("all");
     }
 
@@ -219,7 +200,7 @@ public class Main extends Application {
         getFavourites();
 
     }
-    private Button createMenuButton(String text) { //Creates buttons for the menu list. Meld #1 (Can be melded with other of same meld value)
+    private Button createMenuButton(String text) { //Creates buttons for the menu list.
         Button button = new Button(text);
         button.setPrefSize(200, 70);
         button.setStyle("-fx-background-color: white");
@@ -228,14 +209,7 @@ public class Main extends Application {
         return button;
     }
 
-    private Button createGenreButton(String text) { //Creates buttons for genres in movie and series tab. Meld #1
-        Button button = new Button(text);
-        button.setPrefSize(100, 40);
-        button.setStyle("-fx-background-color: black; -fx-text-fill: white");
-        return button;
-    }
-
-    private String[] createGenres(String type) { //Creates an array of genre strings
+    private void createGenres(String type) { //Creates an array of genre strings and then creates buttons
         String input;
         if (type.equals("movie")) {
             input = "Crime, Drama, Biography, Sport, History, Romance, War, Mystery, Adventure, Family, Fantasy, Thriller, Horror, Film-Noir, Action, Sci-fi, Comedy , Musical, Western, Music";
@@ -243,7 +217,20 @@ public class Main extends Application {
             input = "Talk-show, Documentary, Crime, Drama, Action, Adventure, Drama, Comedy, Fantasy, Animation, Horror, Sci-fi, War, Thriller, Mystery, Biography, History, Family, Western, Romance, Sport";
         }
         String[] genres = input.split(", ");
-        return genres;
+        for (int i = 0; i < genres.length; i++) {
+            if (i % 2 == 0) {
+                genreButtons1.getChildren().add(createGenreButton(genres[i]));
+            } else {
+                genreButtons2.getChildren().add(createGenreButton(genres[i]));
+            }
+        }
+    }
+
+    private Button createGenreButton(String text) { //Creates buttons for genres in movie and series tab.
+        Button button = new Button(text);
+        button.setPrefSize(130, 40);
+        button.setStyle("-fx-background-color: black; -fx-text-fill: white; -fx-border-color: white");
+        return button;
     }
     private Label createLabel(String text) { //Creates a label with text, color, size and font
         Label label = new Label();
@@ -262,7 +249,7 @@ public class Main extends Application {
             list = streaming.specificGenre("movies", genre);
         }
         for (Media media : list) {
-            addMoviePoster(media);
+            addPoster(media, "movies");
         }
     }
 
@@ -275,54 +262,61 @@ public class Main extends Application {
             list = streaming.specificGenre("series", genre);
         }
         for (Media media : list) {
-            addSeriesPoster(media);
+            addPoster(media, "series");
         }
     }
 
     private void getFavourites() { //Adds all user-specific favourites to the movie flowpane (Also adds series)
         movieFlow.getChildren().clear();
         for (Media media : streaming.getActiveAccount().getFavorites()) {
-            addMoviePoster(media);
+            addPoster(media, "movie");
         }
     }
-    private void addMoviePoster(Media media) { //Adding posters to moviepane. Meld #2
+
+    private void addPoster(Media media, String type) {
         ImageView poster = new ImageView(media.getPicture());
         poster.setOnMouseClicked((event) -> {
             popupWindow(media);
         });
-        movieFlow.getChildren().add(poster);
+        if (type.equals("movies")) {
+            movieFlow.getChildren().add(poster);
+        } else {
+            seriesFlow.getChildren().add(poster);
+        }
     }
-    private void addSeriesPoster(Media media) { //Adding posters to seriespane. Meld #2
-        ImageView poster = new ImageView(media.getPicture());
-        poster.setOnMouseClicked((event) -> {
-            popupWindow(media);
-        });
-        seriesFlow.getChildren().add(poster);
-    }
+    
     private void popupWindow(Media media) { //Creates a new window for the popup window when clicking a movie or series
         Stage popup = new Stage();
+        // Main pane
         StackPane popupPane = new StackPane();
         popupPane.setStyle("-fx-background-color: black");
+        // HBox overall
         HBox popupContent = new HBox();
         popupContent.setAlignment(Pos.CENTER);
         popupContent.setSpacing(20);
+        // VBox media info
         VBox popupInfo = new VBox();
         popupInfo.setSpacing(10);
         popupInfo.setAlignment(Pos.CENTER);
+        // HBox buttons
         HBox playInfo = new HBox();
         playInfo.setAlignment(Pos.CENTER);
         playInfo.setSpacing(15);
+        // Labels media info
         Label title = createLabel(media.getTitle() + "");
         Label rating = createLabel("Rating: " + media.getRating());
         Label releaseYear = createLabel("" + media.getReleaseYear());
         Label genres = createLabel(media.getGenres() + "");
+        // Buttons
         playButton();
         if (streaming.getActiveAccount().getFavorites().contains(media)) {
             savedButton(media);
         } else {
             saveButton(media);
         }
+        // Image
         ImageView poster = new ImageView(media.getPicture());
+        // Puzzle solving
         popupContent.getChildren().add(poster);
         popupContent.getChildren().add(popupInfo);
         popupInfo.getChildren().add(title);
@@ -333,6 +327,7 @@ public class Main extends Application {
         playInfo.getChildren().add(playButton);
         playInfo.getChildren().add(saveButton);
         popupPane.getChildren().add(popupContent);
+        // Finalize
         Scene popupScene = new Scene(popupPane, 800, 350);
         popup.setScene(popupScene);
         popup.setTitle(media.getTitle());
@@ -381,7 +376,7 @@ public class Main extends Application {
         movieFlow.getChildren().clear();
         movieFlow.setPrefSize(1265, 840);
         try {
-            addMoviePoster(result);
+            addPoster(result, "movies");
         } catch (NullPointerException e) {
             Stage searchError = new Stage();
             StackPane errorPane = new StackPane();
