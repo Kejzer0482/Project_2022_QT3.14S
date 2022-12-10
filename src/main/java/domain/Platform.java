@@ -153,30 +153,34 @@ public class Platform{
         accounts.add(user);
     }
     public Account getAccount(String name) {
-        Account account;
-        if (name.equals("Kåre")) {
-            account = accounts.get(0);
-        } else if (name.equals("Oliver")) {
-            account = accounts.get(1);
-        } else {
-            account = accounts.get(2);
+        for (Account account : accounts) {
+            if (account.getUserName().equals(name)) {
+                return account;
+            }
         }
-        return account;
+        return null;
     }
     public List<Account> getAccounts() {
         return accounts;
     }
     public void setActiveAccount(String name) {
-        if (name.equals("Kåre")) {
-            activeAccount = accounts.get(0);
-        } else if (name.equals("Oliver")) {
-            activeAccount = accounts.get(1);
-        } else {
-            activeAccount = accounts.get(2);
-        }
+        activeAccount = getAccount(name);
     }
     public Account getActiveAccount() {
         return activeAccount;
+    }
+
+    public void addUser(String name) {
+        User user = new User(name);
+        accounts.add(user);
+    }
+
+    public void deleteAccount(String name) {
+        for (Account account : accounts) {
+            if (account.getUserName().equals(name)) {
+                accounts.remove(account);
+            }
+        }
     }
 
     public Media search_function (String text){

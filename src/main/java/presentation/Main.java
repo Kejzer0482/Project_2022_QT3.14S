@@ -16,6 +16,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.List;
@@ -31,8 +32,10 @@ public class Main extends Application {
     private ScrollPane seriesScroll = new ScrollPane(seriesFlow);
     private VBox menuList = new VBox();
     private VBox contentList = new VBox();
-    private HBox movieGenres = new HBox();
-    private HBox seriesGenres = new HBox();
+    private HBox movieGenres1 = new HBox();
+    private HBox movieGenres2 = new HBox();
+    private HBox seriesGenres1 = new HBox();
+    private HBox seriesGenres2 = new HBox();
     private Label movieLabel = createLabel("Movies");
     private Label seriesLabel = createLabel("Series");
     private Label myListLabel = createLabel("My List");
@@ -66,21 +69,41 @@ public class Main extends Application {
         seriesFlow.setStyle("-fx-background-color: purple");
 
         //Genres
+        movieGenres1.setAlignment(Pos.CENTER);
+        movieGenres2.setAlignment(Pos.CENTER);
         String[] movieGenre = createGenres("movie");
-        for (String genre : movieGenre) {
-            Button button = createGenreButton(genre);
+        int amount1 = movieGenre.length;
+        for (int i = 0; i < amount1; i++) {
+            Button button = createGenreButton(movieGenre[i]);
+            button.setStyle("-fx-border-color: white; -fx-background-color: black; -fx-text-fill: white");
+            button.setPrefWidth(130);
+            String genre = movieGenre[i];
             button.setOnMouseClicked((event) -> {
                 getMovies(genre);
             });
-            movieGenres.getChildren().add(button);
+            if (i % 2 == 0) {
+                movieGenres1.getChildren().add(button);
+            } else {
+                movieGenres2.getChildren().add(button);
+            }
         }
+        seriesGenres1.setAlignment(Pos.CENTER);
+        seriesGenres2.setAlignment(Pos.CENTER);
         String[] seriesGenre = createGenres("series");
-        for (String genre : seriesGenre) {
-            Button button = createGenreButton(genre);
+        int amount2 = seriesGenre.length;
+        for (int i = 0; i < amount2; i++) {
+            Button button = createGenreButton(seriesGenre[i]);
+            button.setStyle("-fx-border-color: white; -fx-background-color: black; -fx-text-fill: white");
+            button.setPrefWidth(130);
+            String genre = seriesGenre[i];
             button.setOnMouseClicked((event) -> {
                 getSeries(genre);
             });
-            seriesGenres.getChildren().add(button);
+            if (i % 2 == 0) {
+                seriesGenres1.getChildren().add(button);
+            } else {
+                seriesGenres2.getChildren().add(button);
+            }
         }
 
         //SearchBar
@@ -107,30 +130,7 @@ public class Main extends Application {
         //AccountInfo
         Button switchAccount = new Button("Switch");
         switchAccount.setOnMouseClicked((event) -> {
-            Stage switchPopup = new Stage();
-            HBox accountList = new HBox();
-            accountList.setSpacing(10);
-            accountList.setAlignment(Pos.CENTER);
-            for (Account account : streaming.getAccounts()) {
-                VBox accountInfo = new VBox();
-                accountInfo.setAlignment(Pos.CENTER);
-                accountInfo.setSpacing(10);
-                Label accountName = new Label(account.getUserName());
-                Button button = new Button("Switch");
-                button.setOnMouseClicked((event2) -> {
-                    streaming.setActiveAccount(account.getUserName());
-                    accountLabel.setText("Logged in as: " + streaming.getActiveAccount().getUserName());
-                    homeButton();
-                    switchPopup.close();
-                });
-                accountInfo.getChildren().add(accountName);
-                accountInfo.getChildren().add(button);
-                accountList.getChildren().add(accountInfo);
-            }
-            Scene switchScene = new Scene(accountList, 200, 70);
-            switchPopup.setTitle("Accounts");
-            switchPopup.setScene(switchScene);
-            switchPopup.show();
+            switchAccount();
         });
         accountInfo.setSpacing(5);
         accountInfo.setAlignment(Pos.CENTER);
@@ -182,7 +182,8 @@ public class Main extends Application {
 
     private void moviesButton() {
         contentList.getChildren().clear();
-        contentList.getChildren().add(movieGenres);
+        contentList.getChildren().add(movieGenres1);
+        contentList.getChildren().add(movieGenres2);
         contentList.getChildren().add(movieScroll);
         movieFlow.setPrefSize(1265, 840);
         getMovies("all");
@@ -190,7 +191,8 @@ public class Main extends Application {
 
     private void seriesButton() {
         contentList.getChildren().clear();
-        contentList.getChildren().add(seriesGenres);
+        contentList.getChildren().add(seriesGenres1);
+        contentList.getChildren().add(seriesGenres2);
         contentList.getChildren().add(seriesScroll);
         seriesFlow.setPrefSize(1265, 840);
         getSeries("all");
@@ -368,9 +370,64 @@ public class Main extends Application {
         try {
             addMoviePoster(result);
         } catch (NullPointerException e) {
-            searchResult.setText("No results: Browsing all movies");
-            getMovies("all");
+            Stage searchError = new Stage();
+            StackPane errorPane = new StackPane();
+            errorPane.setStyle("-fx-background-color: #ff5959");
+            Scene errorScene = new Scene(errorPane, 450, 150);
+            Label errorMessage = new Label("No results found. Returning to Homepage");
+            errorMessage.setStyle("-fx-text-fill: white");
+            errorMessage.setFont(new Font("Calibri", 25));
+            errorPane.setAlignment(Pos.CENTER);
+            errorPane.getChildren().add(errorMessage);
+            searchError.setScene(errorScene);
+            searchError.setTitle("Error 404");
+            searchError.show();
+            homeButton();
         }
+    }
+
+    public void switchAccount() { //MISSING A LOT. Vi tager det på mandag fysisk?
+        Stage switchPopup = new Stage();
+        HBox switchContent = new HBox();
+        VBox accountMenu = new VBox();
+        VBox accountView = new VBox();
+        ScrollPane accountScroll = new ScrollPane(accountView);
+        for (Account account : streaming.getAccounts()) {
+            VBox accountInfo = new VBox();
+            Label accountName = new Label(account.getUserName());
+            Button button = new Button("Switch");
+            button.setOnMouseClicked((event2) -> {
+                streaming.setActiveAccount(account.getUserName());
+                accountLabel.setText("Logged in as: " + streaming.getActiveAccount().getUserName());
+                homeButton();
+                switchPopup.close();
+            });
+            Button deleteButton = new Button("Delete");
+            deleteButton.setOnMouseClicked((event) -> {
+                streaming.deleteAccount(account.getUserName()); //Exception????
+                switchAccount();
+                switchPopup.close();
+            });
+        }
+        Button addUserButton = new Button("Add User");
+        addUserButton.setOnMouseClicked((event) -> {
+            Stage addPopup = new Stage();
+            TextField nameField = new TextField();
+            nameField.setOnKeyPressed((event2) -> {
+                if (event2.getCode().equals(KeyCode.ENTER)) {
+                    streaming.addUser(nameField.getText());
+                    switchPopup.close();
+                    addPopup.close();
+                }
+            });
+            addPopup.show();
+        });
+        switchContent.getChildren().add(accountMenu);
+        switchContent.getChildren().add(accountScroll);
+        Scene switchScene = new Scene(switchContent, 500, 600);
+        switchPopup.setTitle("Accounts");
+        switchPopup.setScene(switchScene);
+        switchPopup.show();
     }
 
     public static void main(String[] args) {
