@@ -114,7 +114,7 @@ public class Platform{
         List<Media> completeList = new ArrayList<>();
         completeList.addAll(searchSerie);
         completeList.addAll(searchMovie);
-
+        
         for(Media current : completeList){
             if(name.toLowerCase().equals(current.getTitle().toLowerCase())){
                return current;}
