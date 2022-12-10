@@ -38,7 +38,7 @@ public class DataAccess {
 
 
     /*public static void main(String[] args) {
-        DataAccess DA = new DataAccess("/Users/ol/Documents/GitHub/GRPRO_Project_QT3.14S/src/Data/film.txt");
+        DataAccess DA = new DataAccess("/Users/ol/Documents/GitHub/GRPRO_Project_QT3.14S/src/Data/movies.txt");
         List<String> dataList = DA.loadFile();
 
         for(String word : dataList){

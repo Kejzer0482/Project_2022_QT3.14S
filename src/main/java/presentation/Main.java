@@ -2,87 +2,149 @@ package presentation;
 
 import domain.Platform;
 import domain.Media;
-import domain.User;
+import domain.Account;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.image.Image;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-//import javax.print.attribute.standard.Media;
-import java.io.File;
 import java.util.List;
 
 public class Main extends Application {
     private Platform streaming = new Platform();
     private BorderPane root = new BorderPane();
-    private StackPane moviesPane = new StackPane();
-    private StackPane seriesPane = new StackPane();
-    private HBox moviesContent = new HBox();
-    private HBox seriesContent = new HBox();
+    private StackPane menuPane = new StackPane();
+    private StackPane contentPane = new StackPane();
+    private FlowPane movieFlow = new FlowPane();
+    private FlowPane seriesFlow = new FlowPane();
+    private ScrollPane movieScroll = new ScrollPane(movieFlow);
+    private ScrollPane seriesScroll = new ScrollPane(seriesFlow);
     private VBox menuList = new VBox();
-    private StackPane stackPane = new StackPane();
-    private GridPane gridPane = new GridPane();
-    private FlowPane flowMovies = new FlowPane();
-    private FlowPane flowSeries = new FlowPane();
-    private ScrollPane scrollMovies = new ScrollPane(flowMovies);
-    private ScrollPane scrollSeries = new ScrollPane(flowSeries);
+    private VBox contentList = new VBox();
+    private HBox movieGenres = new HBox();
+    private HBox seriesGenres = new HBox();
+    private Label movieLabel = createLabel("Movies");
+    private Label seriesLabel = createLabel("Series");
+    private Label myListLabel = createLabel("My List");
+    private HBox accountInfo = new HBox();
+    private Label accountLabel = new Label();
     private Button homeButton = createMenuButton("Home");        //Calling homemade createButton method
     private Button moviesButton = createMenuButton("Movies");
     private Button seriesButton = createMenuButton("Series");
     private Button myListButton = createMenuButton("My List");
-    private Button actionButton = new Button("Action");
+    private Button playButton = new Button();
+    private Button saveButton = new Button();
 
     public void start(Stage primaryStage) {
         //Layers
-        stackPane.setStyle("-fx-background-color: grey");
-        stackPane.setMinWidth(300);
+        menuPane.setStyle("-fx-background-color: grey");
+        menuPane.setMinWidth(300);
 
-        moviesPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        moviesPane.setStyle("-fx-background-color: red");
-        moviesPane.setPadding(new Insets(10, 10, 10, 10));
+        contentPane.setStyle("-fx-background-color: black");
+        contentPane.getChildren().add(contentList);
+        contentPane.setPadding(new Insets(0, 10, 10, 10));
 
-        seriesPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        contentList.setAlignment(Pos.CENTER);
 
-        gridPane.setAlignment(Pos.CENTER);
-        gridPane.setVgap(10);                                          //Adds vertical spacing between grid elements
-        gridPane.setHgap(10);                                          //Adds Horizontal spacing between grid elements
-        gridPane.setStyle("-fx-background-color: black");
-        gridPane.setGridLinesVisible(true);
-        //gridPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);       //Makes the gridpane take out as much space as it can.
+        movieFlow.setHgap(8);
+        movieFlow.setVgap(8);
+        movieFlow.setAlignment(Pos.CENTER);
+        movieFlow.setStyle("-fx-background-color: purple");
+        seriesFlow.setHgap(8);
+        seriesFlow.setVgap(8);
+        seriesFlow.setAlignment(Pos.CENTER);
+        seriesFlow.setStyle("-fx-background-color: purple");
 
-        scrollMovies.setStyle("-fx-background-color: black");
-        scrollMovies.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        //Genres
+        String[] movieGenre = createGenres("movie");
+        for (String genre : movieGenre) {
+            Button button = createGenreButton(genre);
+            button.setOnMouseClicked((event) -> {
+                getMovies(genre);
+            });
+            movieGenres.getChildren().add(button);
+        }
+        String[] seriesGenre = createGenres("series");
+        for (String genre : seriesGenre) {
+            Button button = createGenreButton(genre);
+            button.setOnMouseClicked((event) -> {
+                getSeries(genre);
+            });
+            seriesGenres.getChildren().add(button);
+        }
 
-        scrollSeries.setStyle("-fx-background-color: black");
-        scrollSeries.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-
-        flowMovies.setHgap(10);
-        flowMovies.setVgap(10);
-        flowMovies.setAlignment(Pos.CENTER);
-        flowMovies.setStyle("-fx-background-color: purple");
-        flowMovies.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        flowMovies.setPrefWrapLength(1260);
-
-        flowSeries.setHgap(10);
-        flowSeries.setVgap(10);
-        flowSeries.setAlignment(Pos.CENTER);
-        flowSeries.setStyle("-fx-background-color: purple");
-        flowSeries.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        flowSeries.setPrefWrapLength(1260);
-
-        moviesContent.getChildren().add(actionButton);
-        actionButton.setOnMouseClicked((event) -> {
-            getMovies("action");
+        //SearchBar
+        HBox searchBox = new HBox();
+        searchBox.setSpacing(8);
+        searchBox.setAlignment(Pos.CENTER);
+        TextField searchBar = new TextField();
+        searchBar.setPromptText("Search here");
+        searchBar.setOnKeyPressed((event) -> {
+            if (event.getCode().equals(KeyCode.ENTER)) {
+                search(searchBar.getText());
+                searchBar.clear();
+            }
         });
+        Button searchButton = new Button("Search");
+        searchButton.setOnMouseClicked((event) -> {
+            search(searchBar.getText());
+            searchBar.clear();
+        });
+        searchBox.getChildren().add(searchBar);
+        searchBox.getChildren().add(searchButton);
+        menuList.getChildren().add(searchBox);
+
+        //AccountInfo
+        Button switchAccount = new Button("Switch");
+        switchAccount.setOnMouseClicked((event) -> {
+            Stage switchPopup = new Stage();
+            HBox accountList = new HBox();
+            accountList.setSpacing(10);
+            accountList.setAlignment(Pos.CENTER);
+            for (Account account : streaming.getAccounts()) {
+                VBox accountInfo = new VBox();
+                accountInfo.setAlignment(Pos.CENTER);
+                accountInfo.setSpacing(10);
+                Label accountName = new Label(account.getUserName());
+                Button button = new Button("Switch");
+                button.setOnMouseClicked((event2) -> {
+                    streaming.setActiveAccount(account.getUserName());
+                    accountLabel.setText("Logged in as: " + streaming.getActiveAccount().getUserName());
+                    homeButton();
+                    switchPopup.close();
+                });
+                accountInfo.getChildren().add(accountName);
+                accountInfo.getChildren().add(button);
+                accountList.getChildren().add(accountInfo);
+            }
+            Scene switchScene = new Scene(accountList, 200, 70);
+            switchPopup.setTitle("Accounts");
+            switchPopup.setScene(switchScene);
+            switchPopup.show();
+        });
+        accountInfo.setSpacing(5);
+        accountInfo.setAlignment(Pos.CENTER);
+        accountLabel.setText("Logged in as: " + streaming.getActiveAccount().getUserName());
+        accountLabel.setFont(new Font("Calibri", 20));
+        accountLabel.setStyle("-fx-text-fill: black");
+        accountInfo.getChildren().add(accountLabel);
+        accountInfo.getChildren().add(switchAccount);
 
         //Menu
         menuList.setSpacing(30);
+        menuList.setAlignment(Pos.CENTER);                       //Places button in the middle instead of top left
+        menuPane.getChildren().add(menuList);                    //Adds menu list to the stackPane
+        menuList.getChildren().add(accountInfo);
         homeButton.setOnMouseClicked((event) -> {
             homeButton();
         });
@@ -95,16 +157,11 @@ public class Main extends Application {
         myListButton.setOnMouseClicked((event) -> {
             myListButton();
         });
-        menuList.getChildren().add(homeButton);
-        menuList.getChildren().add(moviesButton);
-        menuList.getChildren().add(seriesButton);
-        menuList.getChildren().add(myListButton);
-        menuList.setAlignment(Pos.CENTER);                       //Places button in the middle instead of top left
-        stackPane.getChildren().add(menuList);                   //Adds menu list to the stackPane
 
         //Scene
         Scene scene = new Scene(root, 1600, 900);       //Creates scene and sets dimensions of window
-        root.setLeft(stackPane);
+        root.setCenter(contentPane);
+        root.setLeft(menuPane);
         primaryStage.setScene(scene);
         primaryStage.setTitle("QT3.14s&Chill");
         primaryStage.show();
@@ -112,134 +169,211 @@ public class Main extends Application {
     }
 
     private void homeButton() {
-        root.setCenter(gridPane);
-        gridPane.getChildren().clear();
-        gridPane.add(scrollMovies, 0, 0);         //Adds the scrollpane for movies to column 0, row 0
-        gridPane.add(scrollSeries, 0, 1);         //Adds the scrollpane for series to column 0, row 1
-        scrollMovies.setPrefSize(1260, 440);
-        scrollSeries.setPrefSize(1260, 440);
+        contentList.getChildren().clear();
+        contentList.getChildren().add(movieLabel);
+        contentList.getChildren().add(movieScroll);
+        contentList.getChildren().add(seriesLabel);
+        contentList.getChildren().add(seriesScroll);
+        movieFlow.setPrefSize(1265, 440);
+        seriesFlow.setPrefSize(1265, 440);
         getMovies("all");
         getSeries("all");
-        homeButton.setDisable(true);
-        moviesButton.setDisable(false);
-        seriesButton.setDisable(false);
-        myListButton.setDisable(false);
     }
 
     private void moviesButton() {
-        root.setCenter(moviesPane);
-        moviesPane.getChildren().clear();
-        moviesPane.getChildren().add(scrollMovies);
-        moviesPane.getChildren().add(moviesContent);
+        contentList.getChildren().clear();
+        contentList.getChildren().add(movieGenres);
+        contentList.getChildren().add(movieScroll);
+        movieFlow.setPrefSize(1265, 840);
         getMovies("all");
-        homeButton.setDisable(false);
-        moviesButton.setDisable(true);
-        seriesButton.setDisable(false);
-        myListButton.setDisable(false);
     }
 
     private void seriesButton() {
-        root.setCenter(scrollSeries);
+        contentList.getChildren().clear();
+        contentList.getChildren().add(seriesGenres);
+        contentList.getChildren().add(seriesScroll);
+        seriesFlow.setPrefSize(1265, 840);
         getSeries("all");
-        homeButton.setDisable(false);
-        moviesButton.setDisable(false);
-        seriesButton.setDisable(true);
-        myListButton.setDisable(false);
     }
 
     private void myListButton() {
-        root.setCenter(gridPane);
-        getMovies("myList");
-        getSeries("myList");
-        homeButton.setDisable(false);
-        moviesButton.setDisable(false);
-        seriesButton.setDisable(false);
-        myListButton.setDisable(true);
+        contentList.getChildren().clear();
+        contentList.getChildren().add(myListLabel);
+        contentList.getChildren().add(movieScroll);
+        movieFlow.setPrefSize(1265, 840);
+        getFavourites();
+
     }
     private Button createMenuButton(String text) {
         Button button = new Button(text);
         button.setPrefSize(200, 70);
         button.setStyle("-fx-background-color: white");
+        button.setFont(new Font("Calibri", 40));
+        menuList.getChildren().add(button);
         return button;
     }
 
-    private void getMovies(String genre) {
-        List<Media> movies = streaming.createMediaList("src/main/java/data/film.txt");
-        flowMovies.getChildren().clear();
-        if (genre.equals("all")) {
-            for (Media media : movies) {
-                String path = media.getPicture();
-                File file = new File(path);
-                Image image = new Image(file.toURI().toString());
-                ImageView poster = new ImageView(image);
-                flowMovies.getChildren().add(poster);
-            }
-        } else if (genre.equals("myList")) {
+    private Button createGenreButton(String text) {
+        Button button = new Button(text);
+        button.setPrefSize(100, 40);
+        button.setStyle("-fx-background-color: black; -fx-text-fill: white");
+        return button;
+    }
 
+    private String[] createGenres(String type) {
+        String input;
+        if (type.equals("movie")) {
+            input = "Crime, Drama, Biography, Sport, History, Romance, War, Mystery, Adventure, Family, Fantasy, Thriller, Horror, Film-Noir, Action, Sci-fi, Comedy , Musical, Western, Music";
         } else {
-            List<Media> list = streaming.specificGenre(movies, genre);
-            for (Media media : list) {
-                String path = media.getPicture();
-                File file = new File(path);
-                Image image = new Image(file.toURI().toString());
-                ImageView poster = new ImageView(image);
-                flowMovies.getChildren().add(poster);
-            }
+            input = "Talk-show, Documentary, Crime, Drama, Action, Adventure, Drama, Comedy, Fantasy, Animation, Horror, Sci-fi, War, Thriller, Mystery, Biography, History, Family, Western, Romance, Sport";
+        }
+        String[] genres = input.split(", ");
+        return genres;
+    }
+    private Label createLabel(String text) {
+        Label label = new Label();
+        label.setText(text);
+        label.setFont(new Font("Calibri", 30));
+        label.setStyle("-fx-text-fill: white");
+        return label;
+    }
+
+    private void getMovies(String genre) {
+        List<Media> list;
+        movieFlow.getChildren().clear();
+        if (genre.equals("all")) {
+            list = streaming.getMovieList();
+        } else {
+            list = streaming.specificGenre("movies", genre);
+        }
+        for (Media media : list) {
+            addMoviePoster(media);
         }
     }
 
     private void getSeries(String genre) {
-        List<Media> series = streaming.createMediaList("src/main/java/data/serie.txt");
-        flowSeries.getChildren().clear();
+        List<Media> list;
+        seriesFlow.getChildren().clear();
         if (genre.equals("all")) {
-            for (Media media : series) {
-                String path = media.getPicture();
-                File file = new File(path);
-                Image image = new Image(file.toURI().toString());
-                ImageView poster = new ImageView(image);
-                flowSeries.getChildren().add(poster);
-            }
-        } else if (genre.equals("myList")) {
-
+            list = streaming.getSeriesList();
         } else {
+            list = streaming.specificGenre("series", genre);
+        }
+        for (Media media : list) {
+            addSeriesPoster(media);
+        }
+    }
 
+    private void getFavourites() {
+        movieFlow.getChildren().clear();
+        for (Media media : streaming.getActiveAccount().getFavorites()) {
+            addMoviePoster(media);
+        }
+    }
+    private void addMoviePoster(Media media) {
+        ImageView poster = new ImageView(media.getPicture());
+        poster.setOnMouseClicked((event) -> {
+            popupWindow(media);
+        });
+        movieFlow.getChildren().add(poster);
+    }
+    private void addSeriesPoster(Media media) {
+        ImageView poster = new ImageView(media.getPicture());
+        poster.setOnMouseClicked((event) -> {
+            popupWindow(media);
+        });
+        seriesFlow.getChildren().add(poster);
+    }
+    private void popupWindow(Media media) {
+        Stage popup = new Stage();
+        StackPane popupPane = new StackPane();
+        popupPane.setStyle("-fx-background-color: black");
+        HBox popupContent = new HBox();
+        popupContent.setAlignment(Pos.CENTER);
+        popupContent.setSpacing(20);
+        VBox popupInfo = new VBox();
+        popupInfo.setSpacing(10);
+        popupInfo.setAlignment(Pos.CENTER);
+        HBox playInfo = new HBox();
+        playInfo.setAlignment(Pos.CENTER);
+        playInfo.setSpacing(15);
+        Label title = createLabel(media.getTitle() + "");
+        Label rating = createLabel("Rating: " + media.getRating());
+        Label releaseYear = createLabel("" + media.getReleaseYear());
+        Label genres = createLabel(media.getGenres() + "");
+        playButton();
+        if (streaming.getActiveAccount().getFavorites().contains(media)) {
+            savedButton(media);
+        } else {
+            saveButton(media);
+        }
+        ImageView poster = new ImageView(media.getPicture());
+        popupContent.getChildren().add(poster);
+        popupContent.getChildren().add(popupInfo);
+        popupInfo.getChildren().add(title);
+        popupInfo.getChildren().add(rating);
+        popupInfo.getChildren().add(releaseYear);
+        popupInfo.getChildren().add(genres);
+        popupInfo.getChildren().add(playInfo);
+        playInfo.getChildren().add(playButton);
+        playInfo.getChildren().add(saveButton);
+        popupPane.getChildren().add(popupContent);
+        Scene popupScene = new Scene(popupPane, 800, 350);
+        popup.setScene(popupScene);
+        popup.setTitle(media.getTitle());
+        popup.show();
+    }
+
+    public void playButton() {
+        playButton.setText("PLAY");
+        playButton.setStyle("-fx-background-color: green; -fx-text-fill: white");
+        playButton.setOnMouseClicked((event) -> {
+            stopButton();
+        });
+    }
+
+    public void stopButton() {
+        playButton.setText("STOP");
+        playButton.setStyle("-fx-background-color: red; -fx-text-fill: white");
+        playButton.setOnMouseClicked((event) -> {
+            playButton();
+        });
+    }
+
+    public void saveButton(Media media) {
+        saveButton.setText("Add to My List");
+        saveButton.setStyle("-fx-background-color: white; -fx-text-fill: black");
+        saveButton.setOnMouseClicked((event) -> {
+            streaming.getActiveAccount().getFavorites().add(media);
+            savedButton(media);
+        });
+    }
+
+    public void savedButton(Media media) {
+        saveButton.setText("Added to list");
+        saveButton.setStyle("-fx-background-color: black; -fx-text-fill: white");
+        saveButton.setOnMouseClicked((event) -> {
+            streaming.getActiveAccount().getFavorites().remove(media);
+            saveButton(media);
+        });
+    }
+    public void search(String search) {
+        Media result = streaming.search_function(search);
+        Label searchResult = createLabel("Search result of: " + search);
+        contentList.getChildren().clear();
+        contentList.getChildren().add(searchResult);
+        contentList.getChildren().add(movieScroll);
+        movieFlow.getChildren().clear();
+        movieFlow.setPrefSize(1265, 840);
+        try {
+            addMoviePoster(result);
+        } catch (NullPointerException e) {
+            searchResult.setText("No results: Browsing all movies");
+            getMovies("all");
         }
     }
 
     public static void main(String[] args) {
         launch(args);
     }
-
-    /*
-
-        //User bruger = new User("Oliver");
-        //List<Media> krimiList = streaming.specificGenre(complete, "crime");
-
-        for(Media krimiMedia : krimiList){
-            System.out.println(krimiMedia.getTitle() + " " + krimiMedia.getGenres() + krimiMedia.getClass() );
-        }
-
-        //Files
-        File directory = new File("src/main/java/data/filmplakater");    //Adds the directory
-        File[] files = directory.listFiles();                                     //Retrieves files
-        Image[] fileName = new Image[files.length];                               //Reads images
-        ImageView[] images = new ImageView[files.length];                         //The images
-
-        for (int i = 0; i < files.length; i++) {
-            System.out.println(files[i].getName());
-            fileName[i] = new Image(files[i].toURI().toString());
-            images[i] = new ImageView(fileName[i]);
-            String titleName = files[i].getAbsoluteFile().getName();
-
-            images[i].setUserData(titleName);
-            images[i].setId(i + "");
-            images[i].setOnMouseClicked((event) -> {
-                Node tagetPictureSource = (Node) event.getSource();
-                String targetImage = images[Integer.parseInt(tagetPictureSource.getId())].getUserData().toString();
-                System.out.println(targetImage);
-            });
-            flow.getChildren().add(images[i]);
-        }
-
-        */
 }

@@ -1,4 +1,7 @@
 package domain;
+import javafx.scene.image.Image;
+
+import java.io.File;
 import java.util.*;
 
 public abstract class Media{
@@ -32,8 +35,10 @@ public abstract class Media{
         return genres;
     }
 
-    public String getPicture() {
-        return picture;
+    public Image getPicture() {
+        File file = new File(picture);
+        Image image = new Image(file.toURI().toString());
+        return image;
     }
 
 

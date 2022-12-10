@@ -4,22 +4,37 @@ import data.DataAccess;
 import java.util.*;
 
 public class Platform{
-    protected ArrayList<Media> movies;
-    protected ArrayList<Media> series;
+    private List<Media> movies;
+    private List<Media> series;
+    private List<Media> complete;
+    private List<Account> accounts;
+    private Account activeAccount;
     public Platform(){
 
         movies = new ArrayList<>();
         series = new ArrayList<>();
-
+        complete = new ArrayList<>();
+        createMediaLists();
+        accounts = new ArrayList<>();
+        createUser("Kåre");
+        createUser("Oliver");
+        createUser("Sebastian");
+        setActiveAccount("Kåre");
     }
 
-    public List<Media> createMediaList(String path){
-       //Retrieving raw data and putting it in an arraylist.
-        DataAccess retrieveData = new DataAccess(path);
-        List<String> rawDataList = retrieveData.loadFile();
-
-        //Arraylist of media from given data
-        List<Media> completeMediaList = new ArrayList<>();
+    public void createMediaLists(){
+        //Retrieving raw data and putting it in an arraylist.
+        DataAccess retrieveMovieData = new DataAccess("src/main/java/data/movies.txt");
+        DataAccess retrieveSeriesData = new DataAccess("src/main/java/data/series.txt");
+        List<String> rawMovieDataList = retrieveMovieData.loadFile();
+        List<String> rawSeriesDataList = retrieveSeriesData.loadFile();
+        List<String> rawDataList = new ArrayList<>();
+        for (String data : rawMovieDataList) {
+            rawDataList.add(data);
+        }
+        for (String data : rawSeriesDataList) {
+            rawDataList.add(data);
+        }
 
         //Retrieving individual lines of data
         for(String mediaRawDataLine : rawDataList){
@@ -45,7 +60,7 @@ public class Platform{
             //adding elements from genreArray to arrayList genre.
             for(int i = 0; i < genreArray.length; i++) {
                 genres.add(genreArray[i]);
-                }
+            }
 
             //Double rating, replacing comma with dot because of double datatype
             double rating = Double.parseDouble(mediaData.get(3).replaceAll("," , "."));
@@ -67,34 +82,56 @@ public class Platform{
             */
 
             if (mediaData.size() < 5){
-                String picturePath = "src/main/java/data/filmplakater/" + title + ".jpg";
+                String picturePath = "src/main/java/data/movieposters/" + title + ".jpg";
                 //Instantiate the object with the sorted data.
                 Movie movie = new Movie(title, releaseYear, genres, rating, picturePath);
 
                 //add to list of media which is to be returned.
-                completeMediaList.add(movie);
+                movies.add(movie);
 
 
 
             } else if(mediaData.size() == 5){
 
                 //Instantiate the object with sorted data for series
-                String picturePath = "src/main/java/data/serieforsider/" + title +".jpg";
+                String picturePath = "src/main/java/data/seriesposters/" + title +".jpg";
                 Series series = new Series(title, releaseYear, genres, rating, seasons_Episodes,  picturePath);
-                completeMediaList.add(series);
+                this.series.add(series);
 
             }
-
+            for (Media media : movies) {
+                complete.add(media);
+            }
+            for (Media media : series) {
+                complete.add(media);
+            }
         }
-        return completeMediaList;
     }
-    public List<Media> specificGenre(List<Media> MediaList, String genre){
+    public List<Media> getMovieList() {
+        return movies;
+    }
+
+    public List<Media> getSeriesList() {
+        return series;
+    }
+
+    public List<Media> getCompleteList() {
+        return complete;
+    }
+
+    public List<Media> specificGenre(String type, String genre){
         //Instantiating the list of results
         List<Media> genresList = new ArrayList<>();
+        List<Media> list;
+        if (type.equals("movies")) {
+            list = movies;
+        } else {
+            list = series;
+        }
         //iterating over each element of media list of a specific type of media
-        for(int i = 0;  i < MediaList.size(); i++){
+        for(int i = 0;  i < list.size(); i++){
             //fetching object
-            Media currentMediaFile = MediaList.get(i);
+            Media currentMediaFile = list.get(i);
             //iterating over each genres if multiple genres
             for(String genreTemp : currentMediaFile.getGenres() ){
                 //if the genres is equal to that of the relevant one, then we add it to the resulting list
@@ -107,6 +144,7 @@ public class Platform{
         //Maybe add an unchecked Exception a la "The genre does not exist".
         return genresList;
     }
+<<<<<<< Updated upstream
 
     public Media search_function (String name){
         List<Media> searchSerie = createMediaList("src/main/java/data/serie.txt");
@@ -118,18 +156,44 @@ public class Platform{
         for(Media current : completeList){
             if(name.toLowerCase().equals(current.getTitle().toLowerCase())){
                return current;}
+=======
+    public void createUser(String name) {
+        User user = new User(name);
+        accounts.add(user);
+    }
+    public Account getAccount(String name) {
+        Account account;
+        if (name.equals("Kåre")) {
+            account = accounts.get(0);
+        } else if (name.equals("Oliver")) {
+            account = accounts.get(1);
+        } else {
+            account = accounts.get(2);
+>>>>>>> Stashed changes
         }
-        return null;
+        return account;
+    }
+    public List<Account> getAccounts() {
+        return accounts;
+    }
+    public void setActiveAccount(String name) {
+        if (name.equals("Kåre")) {
+            activeAccount = accounts.get(0);
+        } else if (name.equals("Oliver")) {
+            activeAccount = accounts.get(1);
+        } else {
+            activeAccount = accounts.get(2);
+        }
+    }
+    public Account getActiveAccount() {
+        return activeAccount;
     }
 
-    public static void main(String[] args) {
-        Platform platform = new Platform();
-        List<Media> movieList = new ArrayList<>();
-
-        movieList = platform.createMediaList("src/main/java/data/serie.txt");
-
-        for(Media series : movieList){
-            System.out.println(series.getTitle());
+    public Media search_function (String text){
+        for(Media media : complete){
+            if(text.toLowerCase().equals(media.getTitle().toLowerCase())){
+                return media;}
         }
+        return null;
     }
 }
