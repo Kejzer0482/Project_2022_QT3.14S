@@ -1,7 +1,10 @@
 package domain;
 
 import data.DataAccess;
-import java.util.*;
+import javafx.scene.chart.PieChart;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Platform{
     private List<Media> movies;
@@ -107,6 +110,7 @@ public class Platform{
             }
         }
     }
+
     public List<Media> getMovieList() {
         return movies;
     }
@@ -144,19 +148,6 @@ public class Platform{
         //Maybe add an unchecked Exception a la "The genre does not exist".
         return genresList;
     }
-<<<<<<< Updated upstream
-
-    public Media search_function (String name){
-        List<Media> searchSerie = createMediaList("src/main/java/data/serie.txt");
-        List<Media> searchMovie = createMediaList("src/main/java/data/film.txt");
-        List<Media> completeList = new ArrayList<>();
-        completeList.addAll(searchSerie);
-        completeList.addAll(searchMovie);
-        
-        for(Media current : completeList){
-            if(name.toLowerCase().equals(current.getTitle().toLowerCase())){
-               return current;}
-=======
     public void createUser(String name) {
         User user = new User(name);
         accounts.add(user);
@@ -169,7 +160,6 @@ public class Platform{
             account = accounts.get(1);
         } else {
             account = accounts.get(2);
->>>>>>> Stashed changes
         }
         return account;
     }
