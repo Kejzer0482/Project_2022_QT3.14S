@@ -131,7 +131,7 @@ public class Main extends Application {
             search(searchBar.getText());
             searchBar.clear();
         });
-        
+
         /* Puzzle
         * @desc Putting everything together
          */
