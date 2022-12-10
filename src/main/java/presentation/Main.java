@@ -16,7 +16,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.List;
@@ -28,28 +27,30 @@ public class Main extends Application {
     private StackPane contentPane = new StackPane();
     private FlowPane movieFlow = new FlowPane();
     private FlowPane seriesFlow = new FlowPane();
-    private ScrollPane movieScroll = new ScrollPane(movieFlow);
-    private ScrollPane seriesScroll = new ScrollPane(seriesFlow);
+    private ScrollPane movieScroll = new ScrollPane(movieFlow);             //Creates new ScrollPane and attaches movieFlow to it
+    private ScrollPane seriesScroll = new ScrollPane(seriesFlow);           //Creates new ScrollPane and attaches seriesFlow to it
     private VBox menuList = new VBox();
     private VBox contentList = new VBox();
     private HBox movieGenres1 = new HBox();
     private HBox movieGenres2 = new HBox();
     private HBox seriesGenres1 = new HBox();
     private HBox seriesGenres2 = new HBox();
-    private Label movieLabel = createLabel("Movies");
-    private Label seriesLabel = createLabel("Series");
-    private Label myListLabel = createLabel("My List");
+    private Label movieLabel = createLabel("Movies");           //Calling homemade createLabel method
+    private Label seriesLabel = createLabel("Series");          //Calling homemade createLabel method
+    private Label myListLabel = createLabel("My List");         //Calling homemade createLabel method
     private HBox accountInfo = new HBox();
     private Label accountLabel = new Label();
-    private Button homeButton = createMenuButton("Home");        //Calling homemade createButton method
-    private Button moviesButton = createMenuButton("Movies");
-    private Button seriesButton = createMenuButton("Series");
-    private Button myListButton = createMenuButton("My List");
+    private Button homeButton = createMenuButton("Home");       //Calling homemade createButton method
+    private Button moviesButton = createMenuButton("Movies");   //Calling homemade createButton method
+    private Button seriesButton = createMenuButton("Series");   //Calling homemade createButton method
+    private Button myListButton = createMenuButton("My List");  //Calling homemade createButton method
     private Button playButton = new Button();
     private Button saveButton = new Button();
 
     public void start(Stage primaryStage) {
-        //Layers
+        /* Layout
+         * @desc Setting layout on different panes and elements
+         */
         menuPane.setStyle("-fx-background-color: grey");
         menuPane.setMinWidth(300);
 
@@ -68,7 +69,11 @@ public class Main extends Application {
         seriesFlow.setAlignment(Pos.CENTER);
         seriesFlow.setStyle("-fx-background-color: purple");
 
-        //Genres
+        /* Genres
+        * @desc Creating genre buttons for movies and series pages.
+                Splitting both into two HBoxes for better visual overview.
+        * @next Code duplication. Might be nice to make a method for this
+         */
         movieGenres1.setAlignment(Pos.CENTER);
         movieGenres2.setAlignment(Pos.CENTER);
         String[] movieGenre = createGenres("movie");
@@ -78,7 +83,7 @@ public class Main extends Application {
             button.setStyle("-fx-border-color: white; -fx-background-color: black; -fx-text-fill: white");
             button.setPrefWidth(130);
             String genre = movieGenre[i];
-            button.setOnMouseClicked((event) -> {
+            button.setOnMouseClicked((event) -> {                   //Returns all movies from a specific genre on click
                 getMovies(genre);
             });
             if (i % 2 == 0) {
@@ -106,7 +111,9 @@ public class Main extends Application {
             }
         }
 
-        //SearchBar
+        /* Search Bar
+         * @desc Adding a search bar to the menu list
+         */
         HBox searchBox = new HBox();
         searchBox.setSpacing(8);
         searchBox.setAlignment(Pos.CENTER);
@@ -127,7 +134,9 @@ public class Main extends Application {
         searchBox.getChildren().add(searchButton);
         menuList.getChildren().add(searchBox);
 
-        //AccountInfo
+        /* Account Info
+         * @desc Adding account information and switch button to the menu list
+         */
         Button switchAccount = new Button("Switch");
         switchAccount.setOnMouseClicked((event) -> {
             switchAccount();
@@ -140,7 +149,9 @@ public class Main extends Application {
         accountInfo.getChildren().add(accountLabel);
         accountInfo.getChildren().add(switchAccount);
 
-        //Menu
+        /* Menu List
+         * @desc Setting up the menu list and adding function to menu buttons (They call their respective methods)
+         */
         menuList.setSpacing(30);
         menuList.setAlignment(Pos.CENTER);                       //Places button in the middle instead of top left
         menuPane.getChildren().add(menuList);                    //Adds menu list to the stackPane
@@ -158,17 +169,19 @@ public class Main extends Application {
             myListButton();
         });
 
-        //Scene
+        /* Initialize
+         * @desc Finalizes the scene and makes the program show
+         */
         Scene scene = new Scene(root, 1600, 900);       //Creates scene and sets dimensions of window
         root.setCenter(contentPane);
         root.setLeft(menuPane);
         primaryStage.setScene(scene);
         primaryStage.setTitle("QT3.14s&Chill");
         primaryStage.show();
-        homeButton();
+        homeButton();                                         //Starts the program at the homepage
     }
 
-    private void homeButton() {
+    private void homeButton() { //Clears content list and builds the homepage
         contentList.getChildren().clear();
         contentList.getChildren().add(movieLabel);
         contentList.getChildren().add(movieScroll);
@@ -180,7 +193,7 @@ public class Main extends Application {
         getSeries("all");
     }
 
-    private void moviesButton() {
+    private void moviesButton() { //Clears content list and builds the moviespage
         contentList.getChildren().clear();
         contentList.getChildren().add(movieGenres1);
         contentList.getChildren().add(movieGenres2);
@@ -189,7 +202,7 @@ public class Main extends Application {
         getMovies("all");
     }
 
-    private void seriesButton() {
+    private void seriesButton() { //Clears content list and builds the seriespage
         contentList.getChildren().clear();
         contentList.getChildren().add(seriesGenres1);
         contentList.getChildren().add(seriesGenres2);
@@ -198,7 +211,7 @@ public class Main extends Application {
         getSeries("all");
     }
 
-    private void myListButton() {
+    private void myListButton() { //Clears content list and builds the user-specific my list
         contentList.getChildren().clear();
         contentList.getChildren().add(myListLabel);
         contentList.getChildren().add(movieScroll);
@@ -206,7 +219,7 @@ public class Main extends Application {
         getFavourites();
 
     }
-    private Button createMenuButton(String text) {
+    private Button createMenuButton(String text) { //Creates buttons for the menu list. Meld #1 (Can be melded with other of same meld value)
         Button button = new Button(text);
         button.setPrefSize(200, 70);
         button.setStyle("-fx-background-color: white");
@@ -215,14 +228,14 @@ public class Main extends Application {
         return button;
     }
 
-    private Button createGenreButton(String text) {
+    private Button createGenreButton(String text) { //Creates buttons for genres in movie and series tab. Meld #1
         Button button = new Button(text);
         button.setPrefSize(100, 40);
         button.setStyle("-fx-background-color: black; -fx-text-fill: white");
         return button;
     }
 
-    private String[] createGenres(String type) {
+    private String[] createGenres(String type) { //Creates an array of genre strings
         String input;
         if (type.equals("movie")) {
             input = "Crime, Drama, Biography, Sport, History, Romance, War, Mystery, Adventure, Family, Fantasy, Thriller, Horror, Film-Noir, Action, Sci-fi, Comedy , Musical, Western, Music";
@@ -232,7 +245,7 @@ public class Main extends Application {
         String[] genres = input.split(", ");
         return genres;
     }
-    private Label createLabel(String text) {
+    private Label createLabel(String text) { //Creates a label with text, color, size and font
         Label label = new Label();
         label.setText(text);
         label.setFont(new Font("Calibri", 30));
@@ -240,7 +253,7 @@ public class Main extends Application {
         return label;
     }
 
-    private void getMovies(String genre) {
+    private void getMovies(String genre) { //Adds movies to the movie flowpane
         List<Media> list;
         movieFlow.getChildren().clear();
         if (genre.equals("all")) {
@@ -253,7 +266,7 @@ public class Main extends Application {
         }
     }
 
-    private void getSeries(String genre) {
+    private void getSeries(String genre) { //Adds series to the series flowpane
         List<Media> list;
         seriesFlow.getChildren().clear();
         if (genre.equals("all")) {
@@ -266,27 +279,27 @@ public class Main extends Application {
         }
     }
 
-    private void getFavourites() {
+    private void getFavourites() { //Adds all user-specific favourites to the movie flowpane (Also adds series)
         movieFlow.getChildren().clear();
         for (Media media : streaming.getActiveAccount().getFavorites()) {
             addMoviePoster(media);
         }
     }
-    private void addMoviePoster(Media media) {
+    private void addMoviePoster(Media media) { //Adding posters to moviepane. Meld #2
         ImageView poster = new ImageView(media.getPicture());
         poster.setOnMouseClicked((event) -> {
             popupWindow(media);
         });
         movieFlow.getChildren().add(poster);
     }
-    private void addSeriesPoster(Media media) {
+    private void addSeriesPoster(Media media) { //Adding posters to seriespane. Meld #2
         ImageView poster = new ImageView(media.getPicture());
         poster.setOnMouseClicked((event) -> {
             popupWindow(media);
         });
         seriesFlow.getChildren().add(poster);
     }
-    private void popupWindow(Media media) {
+    private void popupWindow(Media media) { //Creates a new window for the popup window when clicking a movie or series
         Stage popup = new Stage();
         StackPane popupPane = new StackPane();
         popupPane.setStyle("-fx-background-color: black");
@@ -326,7 +339,7 @@ public class Main extends Application {
         popup.show();
     }
 
-    public void playButton() {
+    public void playButton() { //Defines the play button before being pressed
         playButton.setText("PLAY");
         playButton.setStyle("-fx-background-color: green; -fx-text-fill: white");
         playButton.setOnMouseClicked((event) -> {
@@ -334,7 +347,7 @@ public class Main extends Application {
         });
     }
 
-    public void stopButton() {
+    public void stopButton() { //Defines the play button after being pressed
         playButton.setText("STOP");
         playButton.setStyle("-fx-background-color: red; -fx-text-fill: white");
         playButton.setOnMouseClicked((event) -> {
@@ -342,7 +355,7 @@ public class Main extends Application {
         });
     }
 
-    public void saveButton(Media media) {
+    public void saveButton(Media media) { //Saves media to user-specific 'my list'
         saveButton.setText("Add to My List");
         saveButton.setStyle("-fx-background-color: white; -fx-text-fill: black");
         saveButton.setOnMouseClicked((event) -> {
@@ -351,7 +364,7 @@ public class Main extends Application {
         });
     }
 
-    public void savedButton(Media media) {
+    public void savedButton(Media media) { //Removes media from user-specific 'my list'
         saveButton.setText("Added to list");
         saveButton.setStyle("-fx-background-color: black; -fx-text-fill: white");
         saveButton.setOnMouseClicked((event) -> {
@@ -359,7 +372,7 @@ public class Main extends Application {
             saveButton(media);
         });
     }
-    public void search(String search) {
+    public void search(String search) { //Searches for movie or series through the search bar
         Media result = streaming.search_function(search);
         Label searchResult = createLabel("Search result of: " + search);
         contentList.getChildren().clear();
@@ -396,12 +409,18 @@ public class Main extends Application {
             VBox accountInfo = new VBox();
             Label accountName = new Label(account.getUserName());
             Button button = new Button("Switch");
+            /*
+             * @desc Switch button which switches the active account and closes the switch account window
+             */
             button.setOnMouseClicked((event2) -> {
                 streaming.setActiveAccount(account.getUserName());
                 accountLabel.setText("Logged in as: " + streaming.getActiveAccount().getUserName());
                 homeButton();
                 switchPopup.close();
             });
+            /*
+             * @desc Delete button which deletes account and reopens the switch account window
+             */
             Button deleteButton = new Button("Delete");
             deleteButton.setOnMouseClicked((event) -> {
                 streaming.deleteAccount(account.getUserName()); //Exception????
@@ -412,6 +431,9 @@ public class Main extends Application {
         Button addUserButton = new Button("Add User");
         addUserButton.setOnMouseClicked((event) -> {
             Stage addPopup = new Stage();
+            /*
+             * @desc Textfield for creating new user. Closes itself and reopens the switch account window
+             */
             TextField nameField = new TextField();
             nameField.setOnKeyPressed((event2) -> {
                 if (event2.getCode().equals(KeyCode.ENTER)) {
@@ -430,7 +452,7 @@ public class Main extends Application {
         switchPopup.show();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) { //Running the application
         launch(args);
     }
 }
