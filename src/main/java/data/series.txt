@@ -86,7 +86,7 @@ Sex & The City; 1998-2004; Comedy, Drama, Romance; 7,1; 1-12, 2-18, 3-18, 4-18, 
 Tyrant; 2014-2016; Action, Drama, Thriller; 7,8; 1-10, 2-12, 3-10;
 Billions; 2016- ; Drama; 8,4; 1-12, 2-12, 3-12;
 Shameless; 2011- ; Comedy, Drama; 8,7; 1-12, 2-12, 3-12, 4-12, 5-12, 6-12, 7-12, 8-12, 9-7;
-Smallville; 2001-2011; Adventure, Drama, Romance; 7,5; 1-21, 2-23, 3-22, 4-22, 5-22, 6-22, 7-20, 8-22, 9-21, 19-22;
+Smallville; 2001-2011; Adventure, Drama, Romance; 7,5; 1-21, 2-23, 3-22, 4-22, 5-22, 6-22, 7-20, 8-22, 9-21, 10-22;
 The Defenders; 2017 ; Action, Adventure, Crime; 7,5; 1-8;
 House; 2004-2012; Drama, Mystery; 8,8;  1-22, 2-24, 3-24, 4-16, 5-24, 6-21, 7-23, 8-22;
 Fear The Walking Dead; 2015-; Drama, Horror, Sci-fi; 7,0; 1-6, 2-15, 3-16, 4-16;
@@ -97,4 +97,4 @@ The Civil War; 1990; Documentary, History, War; 9,1; 1-9;
 Person Of Interest; 2011-2016; Action, Crime, Drama; 8,4; 1-23, 2-22, 3-23, 4-22, 5-13;
 Californication; 2007-2014; Comedy, Drama; 8,3; 1-12, 2-12, 3-12, 4-12, 5-12, 6-12, 7-12;
 Three's Company; 1976-1984; Comedy; 7,6; 1-6, 2-25, 3-22, 4-25, 5-22, 6-28, 7-22, 8-22;
-Dexter; 2006-2013; Crime, Drama, Mystery; 8,7; 1-12, 2-12, 3-12, 4-12, 5-12, 6-12, 7-12,8-12;
+Dexter; 2006-2013; Crime, Drama, Mystery; 8,7; 1-12, 2-12, 3-12, 4-12, 5-12, 6-12, 7-12, 8-12;

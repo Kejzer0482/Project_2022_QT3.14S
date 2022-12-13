@@ -67,8 +67,8 @@ public class Platform{
 
             //if the mediatype is a series it has an extra datapoint(Seasons-episode)
             List<String> seasons_Episodes = new ArrayList<>();
-            if(mediaRawDataLine.length() == 5){
-                String[] seasonArray= mediaData.get(4).split(",");
+            if(mediaData.size() == 5){
+                String[] seasonArray= mediaData.get(4).split(", ");
                 //adding elements from seasonArray to arrayList seasons.
                 for(int i = 0; i < seasonArray.length; i++) {
                     //Modifying data, removing the season part

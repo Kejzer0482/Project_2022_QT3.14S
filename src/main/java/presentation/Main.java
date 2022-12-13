@@ -4,6 +4,7 @@ import domain.Platform;
 import domain.Media;
 import domain.Account;
 
+import domain.Series;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -18,6 +19,7 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Main extends Application {
@@ -47,7 +49,7 @@ public class Main extends Application {
          * @desc Setting layout on different panes and elements
          */
         // Menu StackPane
-        menuPane.setStyle("-fx-background-color: grey");
+        menuPane.setStyle("-fx-background-color: black");
         menuPane.setMinWidth(300);
 
         // Content StackPane
@@ -77,7 +79,7 @@ public class Main extends Application {
         // Active account Label
         accountLabel.setText("Not logged in");
         accountLabel.setFont(new Font("Calibri", 20));
-        accountLabel.setStyle("-fx-text-fill: black");
+        accountLabel.setStyle("-fx-text-fill: white");
 
         // Menu list
         menuList.setSpacing(30);
@@ -336,8 +338,54 @@ public class Main extends Application {
         popupInfo.getChildren().add(genres);
         popupInfo.getChildren().add(playInfo);
         popupPane.getChildren().add(popupContent);
+        // Episodes display
+        if (media.display() != null) {
+            Label seasonsLabel = createLabel("Seasons-Episodes");
+            List<String> episodes = new ArrayList<>();
+            for (String string : media.display()) {
+                episodes.add(string);
+            }
+            HBox seasonEpisodes = new HBox();
+            HBox seasonEpisodesExtra = new HBox();
+            HBox seasonEpisodesExtraExtra = new HBox();
+            seasonEpisodes.setAlignment(Pos.CENTER);
+            seasonEpisodes.setSpacing(10);
+            seasonEpisodesExtra.setAlignment(Pos.CENTER);
+            seasonEpisodesExtra.setSpacing(10);
+            seasonEpisodesExtraExtra.setAlignment(Pos.CENTER);
+            seasonEpisodesExtraExtra.setSpacing(10);
+            for (int i = 0; i < episodes.size(); i++) {
+                Label episodesLabel = createLabel((i + 1) + "-" + episodes.get(i));
+                episodesLabel.setStyle("-fx-border-color: white; -fx-text-fill: white; -fx-background-color: black");
+                if (10 < episodes.size() && episodes.size() < 20) {
+                    if (i < (episodes.size() / 2)) {
+                        seasonEpisodes.getChildren().add(episodesLabel);
+                    } else {
+                        seasonEpisodesExtra.getChildren().add(episodesLabel);
+                    }
+                } else if (episodes.size() > 20) {
+                    if (i < (episodes.size() / 3) + 1) {
+                        seasonEpisodes.getChildren().add(episodesLabel);
+                    } else if ((episodes.size() / 3) < i && i < (episodes.size() - (episodes.size() / 3 ))) {
+                        seasonEpisodesExtra.getChildren().add(episodesLabel);
+                    } else {
+                        seasonEpisodesExtraExtra.getChildren().add(episodesLabel);
+                    }
+                } else {
+                    seasonEpisodes.getChildren().add(episodesLabel);
+                }
+            }
+            popupInfo.getChildren().add(seasonsLabel);
+            popupInfo.getChildren().add(seasonEpisodes);
+            if (!seasonEpisodesExtra.getChildren().isEmpty()) {
+                popupInfo.getChildren().add(seasonEpisodesExtra);
+            }
+            if (!seasonEpisodesExtraExtra.getChildren().isEmpty()) {
+                popupInfo.getChildren().add(seasonEpisodesExtraExtra);
+            }
+        }
         // Finalize
-        Scene popupScene = new Scene(popupPane, 800, 350);
+        Scene popupScene = new Scene(popupPane, 1200, 500);
         popup.setScene(popupScene);
         popup.setTitle(media.getTitle());
         popup.show();

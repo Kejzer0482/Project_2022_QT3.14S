@@ -41,5 +41,9 @@ public abstract class Media{
         return image;
     }
 
+    public List<String> display() {
+        return null;
+    }
+
 
 }
