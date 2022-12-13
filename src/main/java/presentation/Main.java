@@ -109,17 +109,11 @@ public class Main extends Application {
          * @desc Adding menu buttons
          */
         Button homeButton = createMenuButton("Home");
-        homeButton.setOnMouseClicked((event) -> {
-            homeButton();
-        });
+        homeButton.setOnMouseClicked((event) -> homeButton());
         Button moviesButton = createMenuButton("Movies");
-        moviesButton.setOnMouseClicked((event) -> {
-            moviesButton();
-        });
+        moviesButton.setOnMouseClicked((event) -> moviesButton());
         Button seriesButton = createMenuButton("Series");
-        seriesButton.setOnMouseClicked((event) -> {
-            seriesButton();
-        });
+        seriesButton.setOnMouseClicked((event) -> seriesButton());
         Button myListButton = createMenuButton("My List");
         myListButton.setOnMouseClicked((event) -> {
             if (streaming.getActiveAccount() != null) {
@@ -129,9 +123,7 @@ public class Main extends Application {
             }
         });
         Button switchAccount = new Button("Switch");
-        switchAccount.setOnMouseClicked((event) -> {
-            switchAccount();
-        });
+        switchAccount.setOnMouseClicked((event) -> switchAccount());
         Button searchButton = new Button("Search");
         searchButton.setOnMouseClicked((event) -> {
             search(searchBar.getText());
@@ -284,9 +276,7 @@ public class Main extends Application {
 
     private void addPoster(Media media, String type) { //Adds posters to the flowpanes with media and "movies"/"series" as arguments
         ImageView poster = new ImageView(media.getPicture());
-        poster.setOnMouseClicked((event) -> {
-            popupWindow(media);
-        });
+        poster.setOnMouseClicked((event) -> popupWindow(media));
         if (type.equals("movies")) {
             movieFlow.getChildren().add(poster);
         } else {
@@ -394,17 +384,13 @@ public class Main extends Application {
     public void playButton() { //Defines the play button before being pressed
         playButton.setText("PLAY");
         playButton.setStyle("-fx-background-color: green; -fx-text-fill: white");
-        playButton.setOnMouseClicked((event) -> {
-            stopButton();
-        });
+        playButton.setOnMouseClicked((event) -> stopButton());
     }
 
     public void stopButton() { //Defines the play button after being pressed
         playButton.setText("STOP");
         playButton.setStyle("-fx-background-color: red; -fx-text-fill: white");
-        playButton.setOnMouseClicked((event) -> {
-            playButton();
-        });
+        playButton.setOnMouseClicked((event) -> playButton());
     }
 
     public void saveButton(Media media) { //Saves media to user-specific 'my list'
