@@ -75,7 +75,7 @@ public class Main extends Application {
         accountInfo.setAlignment(Pos.CENTER);
 
         // Active account Label
-        accountLabel.setText("Logged in as: " + streaming.getActiveAccount().getUserName());
+        accountLabel.setText("Not logged in");
         accountLabel.setFont(new Font("Calibri", 20));
         accountLabel.setStyle("-fx-text-fill: black");
 
@@ -120,7 +120,11 @@ public class Main extends Application {
         });
         Button myListButton = createMenuButton("My List");
         myListButton.setOnMouseClicked((event) -> {
-            myListButton();
+            if (streaming.getActiveAccount() != null) {
+                myListButton();
+            } else {
+                errorMessage("You are not logged in");
+            }
         });
         Button switchAccount = new Button("Switch");
         switchAccount.setOnMouseClicked((event) -> {
@@ -133,7 +137,7 @@ public class Main extends Application {
         });
 
         /* Puzzle
-        * @desc Putting everything together
+         * @desc Putting everything together
          */
         root.setCenter(contentPane);
         root.setLeft(menuPane);
@@ -193,7 +197,6 @@ public class Main extends Application {
         contentList.getChildren().add(movieScroll);
         movieFlow.setPrefSize(1265, 840);
         getFavourites();
-
     }
     private Button createMenuButton(String text) { //Creates buttons for the menu list.
         Button button = new Button(text);
@@ -273,7 +276,7 @@ public class Main extends Application {
     private void getFavourites() { //Adds all user-specific favourites to the movie flowpane (Also adds series)
         movieFlow.getChildren().clear();
         for (Media media : streaming.getActiveAccount().getFavorites()) {
-            addPoster(media, "movie");
+            addPoster(media, "movies");
         }
     }
 
@@ -313,10 +316,14 @@ public class Main extends Application {
         Label genres = createLabel(media.getGenres() + "");
         // Buttons
         playButton();
-        if (streaming.getActiveAccount().getFavorites().contains(media)) {
-            savedButton(media);
-        } else {
-            saveButton(media);
+        playInfo.getChildren().add(playButton);
+        if (streaming.getActiveAccount() != null) {
+            if (streaming.getActiveAccount().getFavorites().contains(media)) {
+                savedButton(media);
+            } else {
+                saveButton(media);
+            }
+            playInfo.getChildren().add(saveButton);
         }
         // Image
         ImageView poster = new ImageView(media.getPicture());
@@ -328,8 +335,6 @@ public class Main extends Application {
         popupInfo.getChildren().add(releaseYear);
         popupInfo.getChildren().add(genres);
         popupInfo.getChildren().add(playInfo);
-        playInfo.getChildren().add(playButton);
-        playInfo.getChildren().add(saveButton);
         popupPane.getChildren().add(popupContent);
         // Finalize
         Scene popupScene = new Scene(popupPane, 800, 350);
@@ -382,35 +387,110 @@ public class Main extends Application {
         try {
             addPoster(result, "movies");
         } catch (NullPointerException e) { //Error message if input does not match any media title
-            Stage searchError = new Stage();
-            StackPane errorPane = new StackPane();
-            errorPane.setStyle("-fx-background-color: #ff5959");
-            Scene errorScene = new Scene(errorPane, 450, 150);
-            Label errorMessage = new Label("No results found. Returning to Homepage");
-            errorMessage.setStyle("-fx-text-fill: white");
-            errorMessage.setFont(new Font("Calibri", 25));
-            errorPane.setAlignment(Pos.CENTER);
-            errorPane.getChildren().add(errorMessage);
-            searchError.setScene(errorScene);
-            searchError.setTitle("Error 404");
-            searchError.show();
+            errorMessage("No results. Returning to homepage");
             homeButton();
         }
     }
 
+    public void errorMessage(String message) {
+        Stage searchError = new Stage();
+        StackPane errorPane = new StackPane();
+        errorPane.setStyle("-fx-background-color: #ff5959");
+        Scene errorScene = new Scene(errorPane, 450, 150);
+        Label errorMessage = new Label(message);
+        errorMessage.setStyle("-fx-text-fill: white");
+        errorMessage.setFont(new Font("Calibri", 25));
+        errorPane.setAlignment(Pos.CENTER);
+        errorPane.getChildren().add(errorMessage);
+        searchError.setScene(errorScene);
+        searchError.setTitle("Error");
+        searchError.show();
+    }
+
     public void switchAccount() { //MISSING A LOT. Vi tager det på mandag fysisk?
         Stage switchPopup = new Stage();
+
+        // Layers
         HBox switchContent = new HBox();
         VBox accountMenu = new VBox();
         VBox accountView = new VBox();
         ScrollPane accountScroll = new ScrollPane(accountView);
+        Button addUserButton = new Button("Add User");
+        Button closeButton = new Button("Close");
+
+        // Layout
+        switchContent.setAlignment(Pos.CENTER);
+        switchContent.setPadding(new Insets(10, 0, 10, 0));
+        accountMenu.setAlignment(Pos.CENTER);
+        accountMenu.setMinWidth(90);
+        accountMenu.setSpacing(15);
+        accountView.setSpacing(15);
+        accountView.setAlignment(Pos.CENTER);
+        accountView.setMinWidth(140);
+        accountScroll.setMinWidth(145);
+        addUserButton.setMinWidth(60);
+        closeButton.setMinWidth(60);
+
+        // Buttons
+        /*
+         * @desc Butting for adding new user
+         */
+        addUserButton.setOnMouseClicked((event) -> {
+            Stage addPopup = new Stage();
+            /*
+             * @desc Textfield for creating new user. Closes itself and reopens the switch account window
+             */
+            TextField nameField = new TextField();
+            nameField.setOnKeyPressed((event2) -> {
+                if (event2.getCode().equals(KeyCode.ENTER)) {
+                    try {
+                        streaming.addUser(nameField.getText());
+                        if (streaming.getActiveAccount() == null) {
+                            streaming.setActiveAccount(nameField.getText());
+                            accountLabel.setText("Logged in as: " + streaming.getActiveAccount().getUserName());
+                            switchPopup.close();
+                            addPopup.close();
+                        } else {
+                            switchPopup.close();
+                            switchAccount();
+                            addPopup.close();
+                        }
+                    } catch (UserAlreadyExistsException e) {
+                        errorMessage(e.getMessage());
+                    }
+                }
+            });
+            Scene addScene = new Scene(nameField);
+            addPopup.setScene(addScene);
+            addPopup.show();
+        });
+        /*
+         * @desc Close window button
+         */
+        closeButton.setOnMouseClicked((event) -> {
+            switchPopup.close();
+        });
+
+        // Account List
         for (Account account : streaming.getAccounts()) {
+            //Layers
             VBox accountInfo = new VBox();
+            HBox accountButtons = new HBox();
+
+            //Layout
+            accountInfo.setAlignment(Pos.CENTER);
+            accountButtons.setSpacing(10);
+            accountButtons.setAlignment(Pos.CENTER);
+
+            //Elements
             Label accountName = new Label(account.getUserName());
-            Button button = new Button("Switch");
             /*
              * @desc Switch button which switches the active account and closes the switch account window
              */
+            Button button = new Button("Switch");
+            if (account == streaming.getActiveAccount()) {
+                button.setDisable(true);
+            }
             button.setOnMouseClicked((event2) -> {
                 streaming.setActiveAccount(account.getUserName());
                 accountLabel.setText("Logged in as: " + streaming.getActiveAccount().getUserName());
@@ -422,30 +502,29 @@ public class Main extends Application {
              */
             Button deleteButton = new Button("Delete");
             deleteButton.setOnMouseClicked((event) -> {
-                streaming.deleteAccount(account.getUserName()); //Exception????
-                switchAccount();
-                switchPopup.close();
-            });
-        }
-        Button addUserButton = new Button("Add User");
-        addUserButton.setOnMouseClicked((event) -> {
-            Stage addPopup = new Stage();
-            /*
-             * @desc Textfield for creating new user. Closes itself and reopens the switch account window
-             */
-            TextField nameField = new TextField();
-            nameField.setOnKeyPressed((event2) -> {
-                if (event2.getCode().equals(KeyCode.ENTER)) {
-                    streaming.addUser(nameField.getText());
+                if (account.getUserName().equals(streaming.getActiveAccount().getUserName())) {
+                    errorMessage("Can't delete active account");
+                } else {
+                    streaming.deleteAccount(account.getUserName()); //Exception????
+                    switchAccount();
                     switchPopup.close();
-                    addPopup.close();
                 }
             });
-            addPopup.show();
-        });
+            accountButtons.getChildren().add(button);
+            accountButtons.getChildren().add(deleteButton);
+            accountInfo.getChildren().add(accountName);
+            accountInfo.getChildren().add(accountButtons);
+            accountView.getChildren().add(accountInfo);
+        }
+
+        // Puzzle
         switchContent.getChildren().add(accountMenu);
         switchContent.getChildren().add(accountScroll);
-        Scene switchScene = new Scene(switchContent, 500, 600);
+        accountMenu.getChildren().add(addUserButton);
+        accountMenu.getChildren().add(closeButton);
+
+        // Finalize
+        Scene switchScene = new Scene(switchContent, 250, 300);
         switchPopup.setTitle("Accounts");
         switchPopup.setScene(switchScene);
         switchPopup.show();

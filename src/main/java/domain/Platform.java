@@ -2,6 +2,7 @@ package domain;
 
 import data.DataAccess;
 import javafx.scene.chart.PieChart;
+import presentation.UserAlreadyExistsException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +20,6 @@ public class Platform{
         complete = new ArrayList<>();
         createMediaLists();
         accounts = new ArrayList<>();
-        createUser("Kåre");
-        createUser("Oliver");
-        createUser("Sebastian");
-        setActiveAccount("Kåre");
     }
 
     public void createMediaLists(){
@@ -148,10 +145,6 @@ public class Platform{
         //Maybe add an unchecked Exception a la "The genre does not exist".
         return genresList;
     }
-    public void createUser(String name) {
-        User user = new User(name);
-        accounts.add(user);
-    }
     public Account getAccount(String name) {
         for (Account account : accounts) {
             if (account.getUserName().equals(name)) {
@@ -170,7 +163,12 @@ public class Platform{
         return activeAccount;
     }
 
-    public void addUser(String name) {
+    public void addUser(String name) throws UserAlreadyExistsException {
+        for (Account account : accounts) {
+            if (account.getUserName().equals(name)) {
+                throw new UserAlreadyExistsException();
+            }
+        }
         User user = new User(name);
         accounts.add(user);
     }
@@ -179,6 +177,7 @@ public class Platform{
         for (Account account : accounts) {
             if (account.getUserName().equals(name)) {
                 accounts.remove(account);
+                break;
             }
         }
     }
