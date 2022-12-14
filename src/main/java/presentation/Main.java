@@ -536,12 +536,12 @@ public class Main extends Application {
              */
             Button deleteButton = new Button("Delete");
             deleteButton.setOnMouseClicked((event) -> {
-                if (account.getUserName().equals(streaming.getActiveAccount().getUserName())) {
-                    errorMessage("Can't delete active account");
-                } else {
+                try {
                     streaming.deleteAccount(account.getUserName()); //Exception????
                     switchAccount();
                     switchPopup.close();
+                } catch (DeletingActiveAccountException e) {
+                    errorMessage(e.getMessage());
                 }
             });
             accountButtons.getChildren().add(button);

@@ -2,6 +2,7 @@ package domain;
 
 import data.DataAccess;
 import javafx.scene.chart.PieChart;
+import presentation.DeletingActiveAccountException;
 import presentation.UserAlreadyExistsException;
 
 import java.util.ArrayList;
@@ -173,11 +174,15 @@ public class Platform{
         accounts.add(user);
     }
 
-    public void deleteAccount(String name) {
-        for (Account account : accounts) {
-            if (account.getUserName().equals(name)) {
-                accounts.remove(account);
-                break;
+    public void deleteAccount(String name) throws DeletingActiveAccountException{
+        if (name.equals(getActiveAccount().getUserName())) {
+            throw new DeletingActiveAccountException();
+        } else {
+            for (Account account : accounts) {
+                if (account.getUserName().equals(name)) {
+                    accounts.remove(account);
+                    break;
+                }
             }
         }
     }
