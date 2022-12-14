@@ -29,20 +29,18 @@ public class DataAccess {
                 result.add(fileScanner.nextLine());
             }
             fileScanner.close();
+
         } catch(FileNotFoundException e){
             //Exception håndtering skal muligvis ske højere oppe.
-            System.out.println("Nothing found. File might be empty.");
+            e.printStackTrace();
         }
         return result;
     }
+    public static void main(String[] args){
+        DataAccess da = new DataAccess("data/media.txt");
+        da.loadFile();
+    }
 
 
-    /*public static void main(String[] args) {
-        DataAccess DA = new DataAccess("/Users/ol/Documents/GitHub/GRPRO_Project_QT3.14S/src/Data/movies.txt");
-        List<String> dataList = DA.loadFile();
 
-        for(String word : dataList){
-            System.out.println(word);
-        }
-    }*/
 }
