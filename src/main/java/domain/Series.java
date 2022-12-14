@@ -13,10 +13,6 @@ public class Series extends Media{
         this.episodes = episodes;
     }
 
-    public List<String> getEpisodes() {
-        return episodes;
-    }
-
     public List<String> display() {
         return episodes;
     }

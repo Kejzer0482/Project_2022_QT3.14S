@@ -148,7 +148,7 @@ public class Platform{
     }
     public Account getAccount(String name) {
         for (Account account : accounts) {
-            if (account.getUserName().equals(name)) {
+            if (account.getUsername().equals(name)) {
                 return account;
             }
         }
@@ -166,7 +166,7 @@ public class Platform{
 
     public void addUser(String name) throws UserAlreadyExistsException {
         for (Account account : accounts) {
-            if (account.getUserName().equals(name)) {
+            if (account.getUsername().equals(name)) {
                 throw new UserAlreadyExistsException();
             }
         }
@@ -175,11 +175,11 @@ public class Platform{
     }
 
     public void deleteAccount(String name) throws DeletingActiveAccountException{
-        if (name.equals(getActiveAccount().getUserName())) {
+        if (name.equals(getActiveAccount().getUsername())) {
             throw new DeletingActiveAccountException();
         } else {
             for (Account account : accounts) {
-                if (account.getUserName().equals(name)) {
+                if (account.getUsername().equals(name)) {
                     accounts.remove(account);
                     break;
                 }

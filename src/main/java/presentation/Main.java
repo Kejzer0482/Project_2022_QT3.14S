@@ -481,7 +481,7 @@ public class Main extends Application {
                         streaming.addUser(nameField.getText());
                         if (streaming.getActiveAccount() == null) {
                             streaming.setActiveAccount(nameField.getText());
-                            accountLabel.setText("Logged in as: " + streaming.getActiveAccount().getUserName());
+                            accountLabel.setText("Logged in as: " + streaming.getActiveAccount().getUsername());
                             switchPopup.close();
                             addPopup.close();
                         } else {
@@ -517,7 +517,7 @@ public class Main extends Application {
             accountButtons.setAlignment(Pos.CENTER);
 
             //Elements
-            Label accountName = new Label(account.getUserName());
+            Label accountName = new Label(account.getUsername());
             /*
              * @desc Switch button which switches the active account and closes the switch account window
              */
@@ -526,8 +526,8 @@ public class Main extends Application {
                 button.setDisable(true);
             }
             button.setOnMouseClicked((event2) -> {
-                streaming.setActiveAccount(account.getUserName());
-                accountLabel.setText("Logged in as: " + streaming.getActiveAccount().getUserName());
+                streaming.setActiveAccount(account.getUsername());
+                accountLabel.setText("Logged in as: " + streaming.getActiveAccount().getUsername());
                 homeButton();
                 switchPopup.close();
             });
@@ -537,7 +537,7 @@ public class Main extends Application {
             Button deleteButton = new Button("Delete");
             deleteButton.setOnMouseClicked((event) -> {
                 try {
-                    streaming.deleteAccount(account.getUserName()); //Exception????
+                    streaming.deleteAccount(account.getUsername()); //Exception????
                     switchAccount();
                     switchPopup.close();
                 } catch (DeletingActiveAccountException e) {

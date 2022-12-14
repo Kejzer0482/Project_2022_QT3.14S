@@ -9,20 +9,11 @@ public abstract class Account{
         this.username = username;
         favorites = new ArrayList<>();
     }
-
-    public void addMediaToFavorites(Media media){
-        favorites.add(media);
-    }
-
-    public void removeFromFavorites(Media media){
-        favorites.remove(media);
-    }
-
     public List<Media> getFavorites(){
         return favorites;
     }
 
-    public String getUserName(){
+    public String getUsername(){
         return username;
     }
 
