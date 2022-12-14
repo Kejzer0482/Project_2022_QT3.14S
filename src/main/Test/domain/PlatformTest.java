@@ -1,13 +1,27 @@
 package domain;
 
+import org.junit.Before;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlatformTest {
+    Platform p;
+    User o = new User("Oliver");
+    @Before
+    void init(){
+        p = new Platform();
+        p.createMediaLists();
+        p.createUser(o.getUserName());
+
+    }
+
+
 
     @Test
-    void createMediaLists() {
+    void createMediaListswithAll400MediaUnits() {
+        assertEquals(200, p.getCompleteList().size()+p.getMovieList().size()+p.getSeriesList().size());
     }
 
     @Test
@@ -26,9 +40,6 @@ class PlatformTest {
     void specificGenre() {
     }
 
-    @Test
-    void createUser() {
-    }
 
     @Test
     void getAccount() {

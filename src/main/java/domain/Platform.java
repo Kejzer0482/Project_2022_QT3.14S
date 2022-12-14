@@ -3,6 +3,7 @@ package domain;
 import data.DataAccess;
 import javafx.scene.chart.PieChart;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +29,17 @@ public class Platform{
     public void createMediaLists(){
         //Retrieving raw data and putting it in an arraylist.
         DataAccess retrieveMovieData = new DataAccess("src/main/java/data/movies.txt");
-        DataAccess retrieveSeriesData = new DataAccess("src/main/java/data/series.txt");
-        List<String> rawMovieDataList = retrieveMovieData.loadFile();
-        List<String> rawSeriesDataList = retrieveSeriesData.loadFile();
+        DataAccess retrieveSeriesData= new DataAccess("src/main/java/data/series.txt");
+        List<String> rawMovieDataList = new ArrayList<>();
+        List<String> rawSeriesDataList = new ArrayList<>();
+        try{
+            rawMovieDataList = retrieveMovieData.loadFile();
+            rawSeriesDataList = retrieveSeriesData.loadFile();
+        } catch(FileNotFoundException e){
+            System.out.println("File not found. Input file may be missing.");
+        }
+
+
         List<String> rawDataList = new ArrayList<>();
         for (String data : rawMovieDataList) {
             rawDataList.add(data);
@@ -145,7 +154,6 @@ public class Platform{
 
             }
         }
-        //Maybe add an unchecked Exception a la "The genre does not exist".
         return genresList;
     }
     public void createUser(String name) {

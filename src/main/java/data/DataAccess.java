@@ -15,10 +15,10 @@ public class DataAccess {
     public DataAccess(String path){
         this.path = path;
     }
-    public List<String> loadFile(){
+    public List<String> loadFile() throws FileNotFoundException {
 
         List<String> result = new ArrayList<>();
-        try {
+
             /*
             Opretter fil via path, og bruger scanner til at gennemløbe filen
             og kopiere den over i en ArrayListe.
@@ -30,16 +30,10 @@ public class DataAccess {
             }
             fileScanner.close();
 
-        } catch(FileNotFoundException e){
-            //Exception håndtering skal muligvis ske højere oppe.
-            e.printStackTrace();
-        }
+
         return result;
     }
-    public static void main(String[] args){
-        DataAccess da = new DataAccess("data/media.txt");
-        da.loadFile();
-    }
+
 
 
 
