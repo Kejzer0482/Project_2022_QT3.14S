@@ -4,7 +4,6 @@ import domain.Platform;
 import domain.Media;
 import domain.Account;
 
-import domain.Series;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
