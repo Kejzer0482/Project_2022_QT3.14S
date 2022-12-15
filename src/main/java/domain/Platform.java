@@ -34,7 +34,7 @@ public class Platform{
             rawMovieDataList = retrieveMovieData.loadFile();
             rawSeriesDataList = retrieveSeriesData.loadFile();
         } catch(FileNotFoundException e){
-            System.out.println("File not found. Input file may be missing.");
+            System.out.println("File not found. Input file might be missing.");
         }
 
 
@@ -134,7 +134,7 @@ public class Platform{
         //Instantiating the list of results
         List<Media> genresList = new ArrayList<>();
         List<Media> list;
-        if (type.equals("movies")) {
+        if (type.toLowerCase().equals("movies")) {
             list = movies;
         } else {
             list = series;
